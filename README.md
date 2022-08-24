@@ -4,8 +4,8 @@
 
 <p align="center">
   <img alt="Python" src="https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue">
-  <a href="https://img.shields.io/pypi/v/jptranstokenizer.svg">
-    <img alt="pypi" src="https://pypi.python.org/pypi/jptranstokenizer">
+  <a href="https://pypi.python.org/pypi/jptranstokenizer">
+    <img alt="pypi" src="https://img.shields.io/pypi/v/jptranstokenizer.svg">
   </a>
   <a href="https://github.com/retarfi/jptranstokenizer#licenses">
     <img alt="GitHub" src="https://img.shields.io/badge/license-Apache--2.0-brightgreen">
