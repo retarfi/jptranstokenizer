@@ -8,7 +8,7 @@
     <img alt="pypi" src="https://img.shields.io/pypi/v/jptranstokenizer.svg">
   </a>
   <a href="https://github.com/retarfi/jptranstokenizer#licenses">
-    <img alt="GitHub" src="https://img.shields.io/badge/license-Apache--2.0-brightgreen">
+    <img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-brightgreen">
   </a>
   <a href="https://github.com/retarfi/jptranstokenizer/releases">
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/retarfi/jptranstokenizer.svg">
