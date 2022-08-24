@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from setuptools import setup
-import jptranstokenizer
+from setuptools import find_packages, setup
 
 
 setup(
@@ -27,6 +26,8 @@ setup(
     keywords="NLP japanese transformer transformers MeCab Juman Sudachi spacy",
     license="Apache",
     url="https://github.com/retarfi/jptranstokenizer",
+    package_dir={"": "src"},
+    packages=find_packages("src"),
     python_requires=">=3.7.0",
     install_requires=["transformers>=4.7.0"],
     classifiers=[
