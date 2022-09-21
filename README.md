@@ -15,4 +15,67 @@
   </a>
 </p>
 
+This is a repository for japanese tokenizer with HuggingFace library.
+
 **issue は日本語でも大丈夫です。**
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#usage">Usage</a>
+    </li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li>
+      <a href="#citation">Citation</a>
+      <ul>
+        <li><a href="#this-implementation">This Implementation</a></li>
+      </ul>
+    </li>
+    <li><a href="#licenses">Licenses</a></li>
+    <li><a href="#related-work">Related Work</a></li>
+  </ol>
+</details>
+
+
+## Usage
+
+To be added
+
+
+<!-- ROADMAP -->
+
+## Roadmap
+
+
+See the [open issues](https://github.com/retarfi/language-pretraining/issues) for a full list of proposed features (and known issues).
+
+## Citation
+
+
+**There will be another paper for this pretrained model.
+Be sure to check here again when you cite.**
+
+### This Implementation
+
+```
+@misc{suzuki-2022-github,
+  author = {Masahiro Suzuki},
+  title = {jptranstokenizer: Japanese Tokenzier for transformers},
+  year = {2022},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/retarfi/jptranstokenizer}}}
+```
+
+## Licenses
+
+The codes in this repository are distributed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+
+## Related Work
+- Pretrained Japanese BERT models (containing Japanese tokenizer)
+  - Autor Tohoku University
+  - https://github.com/cl-tohoku/bert-japanese
