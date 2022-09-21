@@ -17,7 +17,6 @@ from setuptools import find_packages, setup
 
 setup(
     name="jptranstokenizer",
-    version="0.0.2",
     author="Masahiro Suzuki",
     author_email="msuzuki9609@gmail.com",
     description="Japanese Tokenizer with transformers library",

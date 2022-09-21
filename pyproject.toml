@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "jptranstokenizer"
+version = "0.0.2"
+description = "Japanese tokenizer with transformers library"
+authors = ["Masahiro Suzuki <msuzuki9609@gmail.com>"]
+license = "Apache 2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+transformers = "^4.7.0"
+pyknp = "^0.6.1"
+sentencepiece = "^0.1.96"
+spcacy = "^3.2.0"
+SudachiTra = "^0.1.7"
+
+
+[tool.poetry.dev-dependencies]
+black = "^22.6.0"
+isort = "^5.10.1"
+mypy = "^0.971"
+pytest = "^7.1.2"
+
+
+[build-system]
+requires = ["poetry-core", "setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.setuptools_scm]
+write_to = "jptranstokenizer/_version.py"
+
+[tool.black]
+skip-magic-trailing-comma = true
+
+[tool.isort]
+profile = 'black'
+force_single_line = true
+
+[tool.mypy]
+disallow_untyped_defs = true
+ignore_missing_imports = true
