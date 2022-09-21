@@ -7,11 +7,12 @@ name = "jptranstokenizer"
 description = "Japanese tokenizer with transformers library"
 dynamic = ["version"]
 authors = ["Masahiro Suzuki <msuzuki9609@gmail.com>"]
-license = "Apache 2.0"
+license = "Apache-2.0"
 readme = "README.md"
 dependencies = [
     "transformers^4.7.0"
 ]
+url = "https://github.com/retarfi/jptranstokenizer/"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
