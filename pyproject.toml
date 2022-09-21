@@ -22,12 +22,14 @@ classifiers=[
     "Topic :: Text Processing :: Linguistic",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
+packages = [{include = "slack_transfer"}]
 
 [project.urls]
 homepage = "https://github.com/retarfi/jptranstokenizer/"
 
-[tool.setuptools]
-package-dir = {"" = "src"}
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["jptranstokenizer*"]
 
 [tool.setuptools.dynamic]
 version = {attr = "jptranstokenizer.version.version"}
