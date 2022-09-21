@@ -26,17 +26,11 @@ classifiers=[
 [project.urls]
 homepage = "https://github.com/retarfi/jptranstokenizer/"
 
-[tool.setuptools.packages.find]
-where = ["src"]
-include = ["jptranstokenizer*"]
-
-[tool.setuptools.dynamic]
-version = {attr = "jptranstokenizer.version.version"}
+[tool.setuptools]
+package-dir = {"" = "src"}
 
 [tool.setuptools_scm]
 write_to = "src/jptranstokenizer/_version.py"
-version_scheme = "python-simplified-semver"
-local_scheme = "no-local-version"
 
 [tool.poetry.dependencies]
 python = "^3.8"
