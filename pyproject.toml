@@ -1,10 +1,28 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "jptranstokenizer"
-version = "0.0.2"
 description = "Japanese tokenizer with transformers library"
+dynamic = ["version"]
 authors = ["Masahiro Suzuki <msuzuki9609@gmail.com>"]
 license = "Apache 2.0"
 readme = "README.md"
+dependencies = [
+    "transformers^4.7.0"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+version = {attr = "jptranstokenizer.version.version"}
+
+[tool.setuptools_scm]
+write_to = "src/jptranstokenizer/_version.py"
+version_scheme = "python-simplified-semver"
+local_scheme = "no-local-version"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -25,9 +43,6 @@ pytest = "^7.1.2"
 [build-system]
 requires = ["poetry-core", "setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.setuptools_scm]
-write_to = "jptranstokenizer/_version.py"
 
 [tool.black]
 skip-magic-trailing-comma = true
