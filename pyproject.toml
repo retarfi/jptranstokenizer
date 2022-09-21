@@ -6,12 +6,21 @@ build-backend = "setuptools.build_meta"
 name = "jptranstokenizer"
 description = "Japanese tokenizer with transformers library"
 dynamic = ["version"]
-authors = ["Masahiro Suzuki <msuzuki9609@gmail.com>"]
+authors = [
+    {email = "msuzuki9609@gmail.com"},
+    {name = "Masahiro Suzuki"}
+]
 license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
     "transformers^4.7.0"
+]
+classifiers=[
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 
 [project.urls]
