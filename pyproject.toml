@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "setuptools_scm"]
+requires = ["poetry-core", "setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -39,10 +39,6 @@ isort = "^5.10.1"
 mypy = "^0.971"
 pytest = "^7.1.2"
 
-
-[build-system]
-requires = ["poetry-core", "setuptools>=45", "setuptools_scm[toml]>=6.2"]
-build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 skip-magic-trailing-comma = true
