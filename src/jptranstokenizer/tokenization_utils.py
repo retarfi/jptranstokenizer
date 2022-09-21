@@ -13,7 +13,6 @@ from transformers import (
 from transformers.models.bert.tokenization_bert import (
     BasicTokenizer,
     WordpieceTokenizer,
-    load_vocab,
 )
 from transformers.models.bert_japanese.tokenization_bert_japanese import (
     CharacterTokenizer,
