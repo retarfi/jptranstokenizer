@@ -4,27 +4,23 @@ from typing import List, Optional
 
 
 class MainTokenizerABC(ABC):
+    """Abstract tokenizer class for main word division.
+
+    Args:
+        do_lower_case (`bool`, *optional*, defaults to `False`):
+            Whether or not to lowercase the input when tokenizing.
+        never_split (`List[str]`, *optional*):
+            Collection of tokens which will never be split during tokenization.
+        normalize_text (`bool`, *optional*, defaults to `True`):
+            Whether to apply unicode normalization to text before tokenization.
+    """
+
     def __init__(
         self,
         do_lower_case: bool = False,
         never_split: Optional[List[str]] = None,
         normalize_text: bool = True,
-        **kwargs
     ) -> None:
-        """
-        Abstract main word tokenizer.
-
-        Parameters
-        ----------
-            **do_lower_case**: (*optional*) boolean (default True)
-                Whether to lowercase the input.
-            **never_split**: (*optional*) list of str
-                Kept for backward compatibility purposes. Now implemented directly
-                at the base class level (see
-                [`PreTrainedTokenizer.tokenize`]) List of tokens not to split.
-            **normalize_text**: (*optional*) boolean (default True)
-                Whether to apply unicode normalization to text before tokenization.
-        """
         self.do_lower_case = do_lower_case
         self.never_split = never_split if never_split is not None else []
         self.normalize_text = normalize_text
@@ -33,23 +29,44 @@ class MainTokenizerABC(ABC):
     def tokenize(
         self, text: str, never_split: Optional[List[str]] = None, **kwargs
     ) -> List[str]:
+        """Devide the sequence into words.
+
+        Args:
+            text (`str`): The sequence to be encoded.
+            never_split (`List[str]`, *optional*):
+                Collection of tokens which will never be split during tokenization.
+
+        Returns:
+            List[str]: The list of words.
+        """
         pass
 
 
 class Normalizer(MainTokenizerABC):
-    def __init__(
-        self,
-        do_lower_case: bool = False,
-        never_split: Optional[List[str]] = None,
-        normalize_text: bool = True,
-    ):
-        super().__init__(do_lower_case=False, never_split=None, normalize_text=True)
+    """A main word tokenizer, which only normalize and make lower case.
 
-    def tokenize(self, text: str, never_split: Optional[List[str]] = None) -> List[str]:
-        """Tokenizes a piece of text."""
+    Args:
+        do_lower_case (`bool`, *optional*, defaults to `False`):
+            Whether or not to lowercase the input when tokenizing.
+        never_split (`List[str]`, *optional*):
+            Collection of tokens which will never be split during tokenization.
+    """
+
+    def __init__(self, do_lower_case: bool = False, normalize_text: bool = True):
+        super().__init__(do_lower_case=do_lower_case, normalize_text=normalize_text)
+
+    def tokenize(self, text: str, **kwargs) -> List[str]:
+        """Only normalize and make lower case tokenizer.
+        Maybe called for dummy main tokenizer.
+
+        Args:
+            text (str): The sequence to be encoded.
+
+        Returns:
+            List[str]: The list of a sentence.
+        """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)
-        never_split = self.never_split + (
-            never_split if never_split is not None else []
-        )
-        return text
+        if self.do_lower_case:
+            text = text.lower()
+        return [text]

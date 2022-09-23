@@ -27,7 +27,11 @@ class SudachiTokenizer(MainTokenizerABC):
         resource_dir: Optional[str] = None,
         dict_type: Optional[str] = "core",
     ):
-        super().__init__(do_lower_case=False, never_split=None, normalize_text=True)
+        super().__init__(
+            do_lower_case=do_lower_case,
+            never_split=never_split,
+            normalize_text=normalize_text,
+        )
         self.sudachi_tokenizer = SudachipyWordTokenizer(
             split_mode=split_mode,
             config_path=config_path,

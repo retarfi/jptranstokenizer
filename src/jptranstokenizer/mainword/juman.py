@@ -20,7 +20,11 @@ class JumanTokenizer(MainTokenizerABC):
         never_split: Optional[List[str]] = None,
         normalize_text: bool = True,
     ):
-        super().__init__(do_lower_case=False, never_split=None, normalize_text=True)
+        super().__init__(
+            do_lower_case=do_lower_case,
+            never_split=never_split,
+            normalize_text=normalize_text,
+        )
         self.juman = Juman()
 
     def tokenize(self, text: str, never_split: Optional[List[str]] = None) -> List[str]:
