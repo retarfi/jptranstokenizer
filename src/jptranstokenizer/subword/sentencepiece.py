@@ -1,13 +1,5 @@
 from typing import Any, Dict, Optional, List
 
-try:
-    import sentencepiece as sp
-except ModuleNotFoundError as error:
-    raise error.__class__(
-        "You need to install sentencepiece to use SentencePieceTokenizer."
-        "See https://github.com/google/sentencepiece for installation."
-    )
-
 
 class SentencePieceTokenizer:
     """Runs sentencepiece tokenization.
@@ -29,6 +21,13 @@ class SentencePieceTokenizer:
     ):
         if vocab_file is None and spm is None:
             raise ValueError("vocab_file or spm must be specified")
+        try:
+            import sentencepiece as sp
+        except ModuleNotFoundError as error:
+            raise error.__class__(
+                "You need to install sentencepiece to use SentencePieceTokenizer."
+                "See https://github.com/google/sentencepiece for installation."
+            )
         self.spm: sp.SentencePieceProcessor
         if spm is None:
             import sentencepiece as sp

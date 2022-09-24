@@ -4,14 +4,6 @@ from typing import List
 
 from .base import MainTokenizerABC
 
-try:
-    from pyknp import Juman
-except ModuleNotFoundError as error:
-    raise error.__class__(
-        "You need to install pyknp to use JumanTokenizer."
-        "See https://github.com/ku-nlp/pyknp for installation."
-    )
-
 
 class JumanTokenizer(MainTokenizerABC):
     """Tokenizer to split into words using Juman.
@@ -30,6 +22,13 @@ class JumanTokenizer(MainTokenizerABC):
 
     def __init__(self, do_lower_case: bool = False, normalize_text: bool = True):
         super().__init__(do_lower_case=do_lower_case, normalize_text=normalize_text)
+        try:
+            from pyknp import Juman
+        except ModuleNotFoundError as error:
+            raise error.__class__(
+                "You need to install pyknp to use JumanTokenizer."
+                "See https://github.com/ku-nlp/pyknp for installation."
+            )
         self.juman = Juman()
 
     def tokenize(self, text: str) -> List[str]:

@@ -159,19 +159,19 @@ def get_word_tokenizer(
             mecab_option=mecab_option,
         )
     elif word_tokenizer_type == "juman":
-        from .mainword.juman import JumanTokenizer
+        from .mainword import JumanTokenizer
 
         word_tokenizer = JumanTokenizer(
             do_lower_case=do_lower_case, normalize_text=normalize_text
         )
     elif word_tokenizer_type == "spacy-luw":
-        from .mainword.spacy_luw import SpacyluwTokenizer
+        from .mainword import SpacyluwTokenizer
 
         word_tokenizer = SpacyluwTokenizer(
             do_lower_case=do_lower_case, normalize_text=normalize_text
         )
     elif word_tokenizer_type == "sudachi":
-        from .mainword.sudachi import SudachiTokenizer
+        from .mainword import SudachiTokenizer
 
         word_tokenizer = SudachiTokenizer(
             do_lower_case=do_lower_case,
@@ -182,7 +182,7 @@ def get_word_tokenizer(
             dict_type=sudachi_dict_type,
         )
     elif word_tokenizer_type == "none":
-        from .mainword.base import Normalizer
+        from .mainword import Normalizer
 
         word_tokenizer = Normalizer(
             do_lower_case=do_lower_case, normalize_text=normalize_text

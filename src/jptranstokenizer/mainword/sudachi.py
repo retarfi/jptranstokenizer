@@ -3,17 +3,9 @@ from typing import List, Optional
 
 from .base import MainTokenizerABC
 
-try:
-    from sudachitra.sudachipy_word_tokenizer import SudachipyWordTokenizer
-    from sudachitra.word_formatter import word_formatter
-except ModuleNotFoundError as error:
-    raise error.__class__(
-        "You need to install sudachitra to use SudachipyWordTokenizer."
-        "See https://pypi.org/project/SudachiTra/ for installation."
-    )
-    # cf. https://pypi.org/project/SudachiTra/
-    # cf. https://github.com/WorksApplications/SudachiTra/blob/main/sudachitra/tokenization_bert_sudachipy.py
-    # cf. https://github.com/WorksApplications/SudachiTra/blob/main/sudachitra/sudachipy_word_tokenizer.py
+# cf. https://pypi.org/project/SudachiTra/
+# cf. https://github.com/WorksApplications/SudachiTra/blob/main/sudachitra/tokenization_bert_sudachipy.py
+# cf. https://github.com/WorksApplications/SudachiTra/blob/main/sudachitra/sudachipy_word_tokenizer.py
 
 
 class SudachiTokenizer(MainTokenizerABC):
@@ -54,6 +46,14 @@ class SudachiTokenizer(MainTokenizerABC):
     ):
 
         super().__init__(do_lower_case=do_lower_case, normalize_text=normalize_text)
+        try:
+            from sudachitra.sudachipy_word_tokenizer import SudachipyWordTokenizer
+            from sudachitra.word_formatter import word_formatter
+        except ModuleNotFoundError as error:
+            raise error.__class__(
+                "You need to install sudachitra to use SudachipyWordTokenizer."
+                "See https://pypi.org/project/SudachiTra/ for installation."
+            )
         self.sudachi_tokenizer = SudachipyWordTokenizer(
             split_mode=split_mode,
             config_path=config_path,
