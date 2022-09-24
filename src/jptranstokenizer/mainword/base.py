@@ -1,6 +1,6 @@
 import unicodedata
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List
 
 
 class MainTokenizerABC(ABC):
@@ -9,35 +9,25 @@ class MainTokenizerABC(ABC):
     Args:
         do_lower_case (`bool`, *optional*, defaults to `False`):
             Whether or not to lowercase the input when tokenizing.
-        never_split (`List[str]`, *optional*):
-            Collection of tokens which will never be split during tokenization.
         normalize_text (`bool`, *optional*, defaults to `True`):
             Whether to apply unicode normalization to text before tokenization.
     """
 
     def __init__(
-        self,
-        do_lower_case: bool = False,
-        never_split: Optional[List[str]] = None,
-        normalize_text: bool = True,
+        self, do_lower_case: bool = False, normalize_text: bool = True
     ) -> None:
         self.do_lower_case = do_lower_case
-        self.never_split = never_split if never_split is not None else []
         self.normalize_text = normalize_text
 
     @abstractmethod
-    def tokenize(
-        self, text: str, never_split: Optional[List[str]] = None, **kwargs
-    ) -> List[str]:
+    def tokenize(self, text: str, **kwargs) -> List[str]:
         """Devide the sequence into words.
 
         Args:
-            text (`str`): The sequence to be encoded.
-            never_split (`List[str]`, *optional*):
-                Collection of tokens which will never be split during tokenization.
+            text (`str`): A sequence to be encoded.
 
         Returns:
-            List[str]: The list of words.
+            List[str]: A list of words.
         """
         pass
 
@@ -48,8 +38,6 @@ class Normalizer(MainTokenizerABC):
     Args:
         do_lower_case (`bool`, *optional*, defaults to `False`):
             Whether or not to lowercase the input when tokenizing.
-        never_split (`List[str]`, *optional*):
-            Collection of tokens which will never be split during tokenization.
     """
 
     def __init__(self, do_lower_case: bool = False, normalize_text: bool = True):
@@ -60,10 +48,10 @@ class Normalizer(MainTokenizerABC):
         Maybe called for dummy main tokenizer.
 
         Args:
-            text (str): The sequence to be encoded.
+            text (str): A sequence to be encoded.
 
         Returns:
-            List[str]: The list of a sentence.
+            List[str]: A list of a sentence.
         """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)

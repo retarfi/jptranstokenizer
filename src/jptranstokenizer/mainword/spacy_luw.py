@@ -1,5 +1,5 @@
 import unicodedata
-from typing import List, Optional
+from typing import List
 
 from .base import MainTokenizerABC
 
@@ -23,31 +23,41 @@ except OSError as error:
 
 
 class SpacyluwTokenizer(MainTokenizerABC):
-    def __init__(
-        self,
-        do_lower_case: bool = False,
-        never_split: Optional[List[str]] = None,
-        normalize_text: bool = True,
-    ):
-        super().__init__(
-            do_lower_case=do_lower_case,
-            never_split=never_split,
-            normalize_text=normalize_text,
-        )
+    """Tokenizer to split into words using ja_gsdluw in spaCy.
+    spaCy and ja_gsdluw is required to use.
+    For installation, `spaCy <https://pypi.org/project/spacy/>`_ and `ja_gsdluw <https://github.com/megagonlabs/UD_Japanese-GSD/releases/tag/r2.9-NE>`_
+
+    Args:
+        do_lower_case (`bool`, *optional*, defaults to `False`):
+            Whether or not to lowercase the input when tokenizing.Defaults to None.
+        normalize_text (`bool`, *optional*, defaults to `True`):
+            Whether to apply unicode normalization to text before tokenization.
+
+    .. seealso::
+        - spaCy https://github.com/explosion/spaCy
+        - megagonlabs/UD_Japanese-GSD https://github.com/megagonlabs/UD_Japanese-GSD
+        - ja_gsdluw https://github.com/megagonlabs/UD_Japanese-GSD/releases/tag/r2.9-NE
+    """
+
+    def __init__(self, do_lower_case: bool = False, normalize_text: bool = True):
+        super().__init__(do_lower_case=do_lower_case, normalize_text=normalize_text)
         self.nlp = spacy.load("ja_gsdluw")
 
-    def tokenize(self, text: str, never_split: Optional[List[str]] = None) -> List[str]:
+    def tokenize(self, text: str) -> List[str]:
+        """Converts a string in a sequence of words.
+
+        Args:
+            text (`str`): A sequence to be encoded.
+
+        Returns:
+            List[str]: A list of words.
+        """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)
 
-        never_split = self.never_split + (
-            never_split if never_split is not None else []
-        )
         tokens = []
         doc = self.nlp(text)
         tokens = [token.text for sent in doc.sents for token in sent]
         if self.do_lower_case:
-            tokens = [
-                token if token in never_split else token.lower() for token in tokens
-            ]
+            tokens = [token.lower() for token in tokens]
         return tokens
