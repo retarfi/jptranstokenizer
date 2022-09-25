@@ -16,7 +16,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install sphinx
+          python -m pip install poetry sphinx
+          python -m pip install poetry-dynamic-versioning
+          poetry install
       - name: Publish with Sphinx
         run: |
           sphinx-apidoc -e -o ./docs/generated -t ./docs/template/ src/jptranstokenizer
