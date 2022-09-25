@@ -1,0 +1,3 @@
+sphinx!=5.2.0.post0
+transfomers==4.9.2
+jptranstokenizer
