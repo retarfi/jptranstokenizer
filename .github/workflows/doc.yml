@@ -25,10 +25,10 @@ jobs:
           # poetry run sphinx-build ./docs/source ./docs/build -c ./docs/ -T
       - name: Move and remove files
         run: |
-          mv source/* ./
-          rm make.bat
-          rm Makefile
-          rm -r template
+          mv ./docs/source/* ./docs/
+          rm ./docs/make.bat
+          rm ./docs/Makefile
+          rm -r ./docs/template
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         # if: ${{ github.ref == 'refs/heads/main' }}
