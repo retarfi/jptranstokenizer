@@ -121,7 +121,7 @@ def get_word_tokenizer(
     sudachi_resource_dir: Optional[str] = None,
     sudachi_dict_type: Optional[str] = "core",
 ):
-    """_summary_
+    """Main word tokenizer.
 
     Args:
         word_tokenizer (`str`, defaults to `basic`):
@@ -195,7 +195,8 @@ def get_word_tokenizer(
 
 
 class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
-    """_summary_
+    """Japanese tokenizer of main and sub word.
+    Inherited from `transformers.BertJapaneseTokenizer`.
 
     Args:
         vocab_file (`str` or `os.PathLike`, *optional*, defaults to `""`):
@@ -324,9 +325,9 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                     vocab=self.vocab, unk_token=self.unk_token
                 )
             elif self.subword_tokenizer_type == "sentencepiece":
-                from subword import SentencePieceTokenizer
+                from subword import SentencepieceTokenizer
 
-                self.subword_tokenizer = SentencePieceTokenizer(
+                self.subword_tokenizer = SentencepieceTokenizer(
                     vocab_file=vocab_file, sp_model_kwargs=sp_model_kwargs
                 )
                 self.vocab = self.subword_tokenizer.vocab
@@ -347,7 +348,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
 
     @classmethod
     def from_pretrained(cls, tokenizer_name_or_path: Union[str, os.PathLike], **kwargs):
-        r"""
+        """
         Instantiate a `transformers.BertJapaneseTokenizer` (or a derived class) from a predefined tokenizer.
 
         Args:
