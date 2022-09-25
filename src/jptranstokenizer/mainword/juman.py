@@ -1,38 +1,50 @@
 import re
 import unicodedata
-from typing import List, Optional
+from typing import List
 
 from .base import MainTokenizerABC
 
-try:
-    from pyknp import Juman
-except ModuleNotFoundError as error:
-    raise error.__class__(
-        "You need to install pyknp to use JumanTokenizer."
-        "See https://github.com/ku-nlp/pyknp for installation."
-    )
-
 
 class JumanTokenizer(MainTokenizerABC):
-    def __init__(
-        self,
-        do_lower_case: bool = False,
-        never_split: Optional[List[str]] = None,
-        normalize_text: bool = True,
-    ):
-        super().__init__(do_lower_case=False, never_split=None, normalize_text=True)
+    """Tokenizer to split into words using Juman.
+    Juman++ and pyknp is required to use.
+
+    Args:
+        do_lower_case (`bool`, *optional*, defaults to `False`):
+            Whether or not to lowercase the input when tokenizing.Defaults to None.
+        normalize_text (`bool`, *optional*, defaults to `True`):
+            Whether to apply unicode normalization to text before tokenization.
+
+    .. seealso::
+        - Juman++ https://github.com/ku-nlp/jumanpp
+        - pyknp https://github.com/ku-nlp/pyknp
+    """
+
+    def __init__(self, do_lower_case: bool = False, normalize_text: bool = True):
+        super().__init__(do_lower_case=do_lower_case, normalize_text=normalize_text)
+        try:
+            from pyknp import Juman
+        except ModuleNotFoundError as error:
+            raise error.__class__(
+                "You need to install pyknp to use JumanTokenizer."
+                "See https://github.com/ku-nlp/pyknp for installation."
+            )
         self.juman = Juman()
 
-    def tokenize(self, text: str, never_split: Optional[List[str]] = None) -> List[str]:
-        """Tokenizes a piece of text."""
+    def tokenize(self, text: str) -> List[str]:
+        """Converts a string in a sequence of words.
+
+        Args:
+            text (`str`): A sequence to be encoded.
+
+        Returns:
+            List[str]: A list of words.
+        """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)
         # "#" and "@" at the beginning of a sentence causes timeout error
         text = re.sub("^#", "＃", text)
         text = re.sub("^@", "＠", text)
-        never_split = self.never_split + (
-            never_split if never_split is not None else []
-        )
         tokens = []
         try:
             result = self.juman.analysis(text)
@@ -64,7 +76,7 @@ class JumanTokenizer(MainTokenizerABC):
             sys.exit(1)
         for mrph in result:
             token = mrph.midasi
-            if self.do_lower_case and token not in never_split:
+            if self.do_lower_case:
                 token = token.lower()
             tokens.append(token)
         if use_underscore:

@@ -77,5 +77,14 @@ The codes in this repository are distributed under the [Apache License 2.0](http
 
 ## Related Work
 - Pretrained Japanese BERT models (containing Japanese tokenizer)
-  - Autor Tohoku University
+  - Autor NLP Lab. in Tohoku University
   - https://github.com/cl-tohoku/bert-japanese
+- SudachiTra
+  - Author Works Applications
+  - https://github.com/WorksApplications/SudachiTra
+- UD_Japanese-GSD
+  - Author megagonlabs
+  - https://github.com/megagonlabs/UD_Japanese-GSD
+- Juman++
+  - Author Kurohashi Lab. in Universyti of Kyoto
+  - https://github.com/ku-nlp/jumanpp
