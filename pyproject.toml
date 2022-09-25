@@ -47,7 +47,7 @@ python = "^3.8"
 transformers = "^4.7.0"
 pyknp = "^0.6.1"
 sentencepiece = "^0.1.96"
-spcacy = "^3.2.0"
+spacy = "^3.2.0"
 SudachiTra = "^0.1.7"
 
 
