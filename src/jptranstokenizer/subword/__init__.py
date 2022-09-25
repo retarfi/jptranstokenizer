@@ -1,1 +1,1 @@
-from .sentencepiece import SentencePieceTokenizer
+from .sentencepiece import SentencepieceTokenizer
