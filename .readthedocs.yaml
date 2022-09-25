@@ -30,4 +30,4 @@ python:
    - requirements: docs/requirements.txt
    # install jptranstokenizer from source
    - method: pip
-      path: .
+     path: .
