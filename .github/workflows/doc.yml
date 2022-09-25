@@ -23,9 +23,15 @@ jobs:
         run: |
           poetry run sphinx-apidoc -e -o ./docs/source/generated -t ./docs/template/ ./src/jptranstokenizer
           # poetry run sphinx-build ./docs/source ./docs/build -c ./docs/ -T
+      - name: Move and remove files
+        run: |
+          mv source/* ./
+          rm make.bat
+          rm Makefile
+          rm -r template
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
+        # if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/

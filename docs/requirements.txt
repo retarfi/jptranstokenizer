@@ -1,3 +1,6 @@
 sphinx!=5.2.0.post0
 transformers==4.9.2
+pyknp==0.6.1
+SudachiTra==0.1.7
+spacy==3.2.0
 jptranstokenizer
