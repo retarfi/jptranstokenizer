@@ -31,6 +31,7 @@ jobs:
   testpypi:
     name: Publish Python distributions to Test PyPI
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -49,8 +50,16 @@ jobs:
         poetry publish --build -r testpypi --no-interaction
   pypi:
     name: Publish Python distributions to PyPI
+    needs: [tagging, testpypi]
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     steps:
+    - name: Get the version
+      id: get_version
+      run: |
+        echo ::set-output name=TAG::`echo $SOURCE_VERSION | cut -d / -f 2`
+      env:
+        SOURCE_VERSION: ${{ github.event.pull_request.head.ref }}
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
