@@ -17,7 +17,7 @@ import jptranstokenizer
 project = "jptranstokenizer"
 copyright = "2022, Masahiro Suzuki"
 author = "Masahiro Suzuki"
-release = jptranstokenizer.version
+release = jptranstokenizer.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
