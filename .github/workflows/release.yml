@@ -28,7 +28,7 @@ jobs:
             git tag -a `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\/v//'` -m " "
             git push origin `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\/v//'`
             git push --delete origin ${{ github.event.pull_request.head.ref }}
-  testpypi:
+  pypi:
     name: Publish Python distributions to Test PyPI
     runs-on: ubuntu-latest
     steps:
