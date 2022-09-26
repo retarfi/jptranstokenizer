@@ -1,0 +1,68 @@
+name: Release
+on:
+  pull_request:
+    branches:
+      - main
+      - release/v**
+    types:
+      - opened
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test with pytest
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install poetry
+        poetry install
+    - name: test release
+      run: |
+        poetry config repositories.testpypi https://test.pypi.org/legacy/
+        poetry config pypi-token.testpypi ${{ secrets.TEST_PYPI_API_TOKEN }}
+        poetry publish --build -r testpypi --no-interaction
+  pypi:
+    name: Publish Python distributions to PyPI
+    needs: [tagging, testpypi]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the version
+      id: get_version
+      run: |
+        echo ::set-output name=TAG::`echo $SOURCE_VERSION | cut -d / -f 2`
+      env:
+        SOURCE_VERSION: ${{ github.event.pull_request.head.ref }}
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Install Juman++
+      run: |
+        wget https://github.com/ku-nlp/jumanpp/releases/download/v2.0.0-rc3/jumanpp-2.0.0-rc3.tar.xz
+        tar xvf jumanpp-2.0.0-rc3.tar.xz
+        sudo apt install build-essential -y
+        sudo apt install cmake -y
+        cd jumanpp-2.0.0-rc3/
+        mkdir build
+        cd build/
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local
+        make
+        sudo make install
+        cd ../../
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        python -m pip install poetry
+        poetry install
+        poetry add https://github.com/megagonlabs/UD_Japanese-GSD/releases/download/r2.9-NE/ja_gsdluw-3.2.0-py3-none-any.whl
+    - name: Test
+        poetry run black --check --diff --quiet --skip-magic-trailing-comma .
+        poetry run pytest tests/
