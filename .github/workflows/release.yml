@@ -9,7 +9,7 @@ on:
 jobs:
   tagging:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     steps:
         - name: Get the version
           id: get_version
@@ -25,8 +25,8 @@ jobs:
             git config --global user.name "Masahiro Suzuki"
             git fetch origin ${{ github.event.pull_request.head.ref }}
             git checkout main
-            git tag -a `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\///'` -m " "
-            git push origin `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\///'`
+            git tag -a `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\/v//'` -m " "
+            git push origin `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\/v//'`
             git push --delete origin ${{ github.event.pull_request.head.ref }}
   testpypi:
     name: Publish Python distributions to Test PyPI
