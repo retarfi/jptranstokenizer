@@ -31,6 +31,7 @@ jobs:
   testpypi:
     name: Publish Python distributions to Test PyPI
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -51,6 +52,7 @@ jobs:
     name: Publish Python distributions to PyPI
     needs: [tagging, testpypi]
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/v')
     steps:
     - name: Get the version
       id: get_version
