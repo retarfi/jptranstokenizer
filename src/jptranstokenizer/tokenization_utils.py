@@ -1,13 +1,14 @@
 import collections
 import os
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import transformers
 from transformers import AlbertTokenizer, BertJapaneseTokenizer, BertTokenizer, logging
 from transformers.models.bert.tokenization_bert import (
     BasicTokenizer,
     WordpieceTokenizer,
+    load_vocab,
 )
 from transformers.models.bert_japanese.tokenization_bert_japanese import (
     CharacterTokenizer,
@@ -40,7 +41,7 @@ logging.set_verbosity_info()
 logging.enable_explicit_format()
 logger = logging.get_logger()
 
-PUBLIC_AVAILABLE_SETTING_MAP: Dict[str, Dict[str, str]] = {
+PUBLIC_AVAILABLE_SETTING_MAP: Dict[str, Dict[str, Union[str, bool]]] = {
     "cl-tohoku/bert-base-japanese": {
         "word_tokenizer": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
@@ -292,11 +293,6 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 "To load the vocabulary from a Google pretrained model use "
                 "`AutoTokenizer.from_pretrained(PRETRAINED_MODEL_NAME)`"
             )
-        # if subword_tokenizer != "sentencepiece" and not call_from_pretrained:
-        #     self.vocab = load_vocab(vocab_file)
-        #     self.ids_to_tokens = collections.OrderedDict(
-        #         [(ids, tok) for tok, ids in self.vocab.items()]
-        #     )
 
         self.do_word_tokenize = do_word_tokenize
         self.lower_case = do_lower_case
@@ -316,6 +312,11 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         self.do_subword_tokenize = do_subword_tokenize
         self.subword_tokenizer_type = subword_tokenizer
         if self.do_subword_tokenize and not call_from_pretrained:
+            if self.subword_tokenizer_type in ["wordpiece", "character"]:
+                self.vocab = load_vocab(vocab_file)
+                self.ids_to_tokens = collections.OrderedDict(
+                    [(ids, tok) for tok, ids in self.vocab.items()]
+                )
             if self.subword_tokenizer_type == "wordpiece":
                 self.subword_tokenizer = WordpieceTokenizer(
                     vocab=self.vocab, unk_token=self.unk_token
@@ -325,10 +326,10 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                     vocab=self.vocab, unk_token=self.unk_token
                 )
             elif self.subword_tokenizer_type == "sentencepiece":
-                from subword import SentencepieceTokenizer
+                from .subword import SentencepieceTokenizer
 
                 self.subword_tokenizer = SentencepieceTokenizer(
-                    vocab_file=vocab_file, sp_model_kwargs=sp_model_kwargs
+                    vocab_file=str(vocab_file), sp_model_kwargs=sp_model_kwargs
                 )
                 self.vocab = self.subword_tokenizer.vocab
                 self.ids_to_tokens = collections.OrderedDict(
@@ -421,9 +422,9 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             ):
                 # sentencepiece
                 subword_tokenizer_type = "sentencepiece"
-                from .subword.sentencepiece import SentencePieceTokenizer
+                from .subword import SentencepieceTokenizer
 
-                subword_tokenizer = SentencePieceTokenizer(
+                subword_tokenizer = SentencepieceTokenizer(
                     vocab_file=None,
                     sp_model_kwargs=sp_model_kwargs,
                     spm=tentative_tokenizer.sp_model,
@@ -502,7 +503,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 raise ValueError("tokenizer_class must be specified")
         return _from_pretrained(**kwargs)
 
-    def convert_tokens_to_string(self, tokens):
+    def convert_tokens_to_string(self, tokens: List[str]):
         if self.subword_tokenizer_type in ["character", "wordpiece"]:
             return super().convert_tokens_to_string(self, tokens)
         elif self.subword_tokenizer_type == "sentencepiece":
