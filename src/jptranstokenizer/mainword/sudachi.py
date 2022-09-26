@@ -1,5 +1,5 @@
 import unicodedata
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from .base import MainTokenizerABC
 
@@ -64,8 +64,9 @@ class SudachiTokenizer(MainTokenizerABC):
             "surface", self.sudachi_tokenizer.sudachi_dict
         )
 
-    def tokenize(self, text: str) -> List[str]:
+    def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
         """Converts a string in a sequence of words.
+        Other kwargs (such as `never_split`) are ignored.
 
         Args:
             text (`str`): A sequence to be encoded.

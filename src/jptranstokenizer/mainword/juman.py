@@ -1,6 +1,6 @@
 import re
 import unicodedata
-from typing import List
+from typing import Any, Dict, List
 
 from .base import MainTokenizerABC
 
@@ -31,8 +31,9 @@ class JumanTokenizer(MainTokenizerABC):
             )
         self.juman = Juman()
 
-    def tokenize(self, text: str) -> List[str]:
+    def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
         """Converts a string in a sequence of words.
+        Other kwargs (such as `never_split`) are ignored.
 
         Args:
             text (`str`): A sequence to be encoded.

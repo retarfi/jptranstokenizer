@@ -1,6 +1,6 @@
 import unicodedata
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Any, Dict, List
 
 
 class MainTokenizerABC(ABC):
@@ -20,7 +20,7 @@ class MainTokenizerABC(ABC):
         self.normalize_text = normalize_text
 
     @abstractmethod
-    def tokenize(self, text: str, **kwargs) -> List[str]:
+    def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
         """Devide the sequence into words.
 
         Args:
@@ -43,9 +43,10 @@ class Normalizer(MainTokenizerABC):
     def __init__(self, do_lower_case: bool = False, normalize_text: bool = True):
         super().__init__(do_lower_case=do_lower_case, normalize_text=normalize_text)
 
-    def tokenize(self, text: str, **kwargs) -> List[str]:
+    def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
         """Only normalize and make lower case tokenizer.
         Maybe called for dummy main tokenizer.
+        Other kwargs (such as `never_split`) are ignored.
 
         Args:
             text (str): A sequence to be encoded.
