@@ -1,46 +1,12 @@
-[build-system]
-requires = ["poetry-core", "setuptools>=45", "setuptools_scm[toml]>=6.2"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "jptranstokenizer"
-description = "Japanese tokenizer with transformers library"
-dynamic = ["version"]
-authors = [
-    {email = "msuzuki9609@gmail.com"},
-    {name = "Masahiro Suzuki"}
-]
-license = {file = "LICENSE"}
-readme = "README.md"
-requires-python = ">=3.7"
-dependencies = [
-    "transformers>=4.7.0"
-]
-classifiers=[
-    "Development Status :: 4 - Beta",
-    "Programming Language :: Python",
-    "Topic :: Text Processing :: Linguistic",
-    "Topic :: Software Development :: Libraries :: Python Modules"
-]
-
-[project.urls]
-homepage = "https://github.com/retarfi/jptranstokenizer/"
-
-[tool.setuptools]
-package-dir = {"" = "src"}
-
-[tool.setuptools_scm]
-write_to = "src/jptranstokenizer/_version.py"
-
 [tool.poetry]
 name = "jptranstokenizer"
-version = "0.0.0"
+version = "0.0.3"
 description = "Japanese tokenizer with transformers library"
-authors = ["Masahiro Suzuki <ksuzuki9609@gmail.com>"]
+authors = ["Masahiro Suzuki <msuzuki9609@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "jptranstokenizer"}]
 
-[tool.poetry-dynamic-versioning]
-enable = true
-style = "pep440"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -59,6 +25,10 @@ pytest = "^7.1.2"
 Sphinx = "5.1.1"
 sphinx-rtd-theme = "^1.0.0"
 
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 skip-magic-trailing-comma = true
