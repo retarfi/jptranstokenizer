@@ -5,7 +5,7 @@ description = "Japanese tokenizer with transformers library"
 authors = ["Masahiro Suzuki <msuzuki9609@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "jptranstokenizer"}]
+packages = [{include = "jptranstokenizer", from = "src"}]
 
 
 [tool.poetry.dependencies]
