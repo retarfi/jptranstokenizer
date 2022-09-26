@@ -1,4 +1,4 @@
-name: Release
+name: Test
 on:
   pull_request:
     branches:
@@ -9,9 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  codetest:
     name: Test with pytest
-    needs: [tagging, testpypi]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -38,7 +37,7 @@ jobs:
         python -m pip install poetry
         poetry install
         poetry add https://github.com/megagonlabs/UD_Japanese-GSD/releases/download/r2.9-NE/ja_gsdluw-3.2.0-py3-none-any.whl
-    - name: Test
+    - name: pyest
       run: |
         poetry run black --check --diff --quiet --skip-magic-trailing-comma .
         poetry run pytest tests/
