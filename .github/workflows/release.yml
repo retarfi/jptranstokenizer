@@ -49,8 +49,15 @@ jobs:
         poetry publish --build -r testpypi --no-interaction
   pypi:
     name: Publish Python distributions to PyPI
+    needs: [tagging, testpypi]
     runs-on: ubuntu-latest
     steps:
+    - name: Get the version
+      id: get_version
+      run: |
+        echo ::set-output name=TAG::`echo $SOURCE_VERSION | cut -d / -f 2`
+      env:
+        SOURCE_VERSION: ${{ github.event.pull_request.head.ref }}
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
