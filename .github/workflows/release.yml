@@ -25,8 +25,8 @@ jobs:
             git config --global user.name "Masahiro Suzuki"
             git fetch origin ${{ github.event.pull_request.head.ref }}
             git checkout main
-            git tag -a `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\/v//'` -m " "
-            git push origin `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\/v//'`
+            git tag -a `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\///'` -m " "
+            git push origin `echo '${{ github.event.pull_request.head.ref }}' | sed 's/release\///'`
             git push --delete origin ${{ github.event.pull_request.head.ref }}
   pypi:
     name: Publish Python distributions to Test PyPI
@@ -45,11 +45,11 @@ jobs:
     - name: test release
       run: |
         poetry config repositories.testpypi https://test.pypi.org/legacy/
-        poetry config pypi-token.testpypi ${{ secrets.TEST_PYPI_TOKEN }}
+        poetry config pypi-token.testpypi ${{ secrets.TEST_PYPI_API_TOKEN }}
         poetry publish --build -r testpypi
     - name: release
       run: |
-        poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+        poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
         poetry publish --build
     - name: Create release
       id: create_release
