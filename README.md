@@ -8,54 +8,48 @@
     <img alt="pypi" src="https://img.shields.io/pypi/v/jptranstokenizer.svg">
   </a>
   <a href="https://github.com/retarfi/jptranstokenizer#licenses">
-    <img alt="License" src="https://img.shields.io/badge/license-Apache--2.0-brightgreen">
+    <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">
+  </a>
+  <a href="https://github.com/retarfi/jptranstokenizer/actions/workflows/test.yml">
+    <img alt="Test" src="https://github.com/retarfi/jptranstokenizer/actions/workflows/test.yml/badge.svg">
   </a>
   <a href="https://github.com/retarfi/jptranstokenizer/releases">
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/retarfi/jptranstokenizer.svg">
   </a>
 </p>
 
-This is a repository for japanese tokenizer with HuggingFace library.
-
+This is a repository for japanese tokenizer with HuggingFace library.  
+You can use `JapaneseTransformerTokenizer` like `transformers.BertJapaneseTokenizer`.  
 **issue は日本語でも大丈夫です。**
 
+## Documentations
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#usage">Usage</a>
-    </li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li>
-      <a href="#citation">Citation</a>
-      <ul>
-        <li><a href="#this-implementation">This Implementation</a></li>
-      </ul>
-    </li>
-    <li><a href="#licenses">Licenses</a></li>
-    <li><a href="#related-work">Related Work</a></li>
-  </ol>
-</details>
+Documentations are available on [readthedoc](https://jptranstokenizer.readthedocs.io/en/latest/index.html).
+## Install
+```
+pip install jptranstokenizer
+```
 
+## Quickstart
 
-## Usage
+This is the example to use `jptranstokenizer.JapaneseTransformerTokenizer` with [sentencepiece mode of nlp-waseda/roberta-base-japanese](https://huggingface.co/nlp-waseda/roberta-base-japanese) and Juman++.  
+Before the following steps, you need to **install pyknp and Juman++**.
 
-To be added
+```python
+>>> from jptranstokenizer import JapaneseTransformerTokenizer
+>>> tokenizer = JapaneseTransformerTokenizer.from_pretrained("nlp-waseda/roberta-base-japanese")
+>>> tokens = tokenizer.tokenize("外国人参政権")
+# tokens: ['▁外国', '▁人', '▁参政', '▁権']
+```
 
+Note that different dependencies are required depending on the type of tokenizer you use.  
+See also [Quickstart on Read the Docs](https://jptranstokenizer.readthedocs.io/en/latest/quickstart.html)
 
-<!-- ROADMAP -->
-
-## Roadmap
-
-
-See the [open issues](https://github.com/retarfi/language-pretraining/issues) for a full list of proposed features (and known issues).
 
 ## Citation
 
 
-**There will be another paper for this pretrained model.
+**There will be another paper.
 Be sure to check here again when you cite.**
 
 ### This Implementation
@@ -69,10 +63,6 @@ Be sure to check here again when you cite.**
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/retarfi/jptranstokenizer}}}
 ```
-
-## Licenses
-
-The codes in this repository are distributed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 
 ## Related Work

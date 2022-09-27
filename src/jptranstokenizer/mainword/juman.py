@@ -7,12 +7,17 @@ from .base import MainTokenizerABC
 
 class JumanTokenizer(MainTokenizerABC):
     """Tokenizer to split into words using Juman.
-    Juman++ and pyknp is required to use.
+    Juman++ and pyknp are required to use.
+    You can import this module shortly:
+
+    .. code-block:: none
+
+       >> from jptranstokenizer.mainword import JumanTokenizer
 
     Args:
-        do_lower_case (`bool`, *optional*, defaults to `False`):
+        do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.Defaults to None.
-        normalize_text (`bool`, *optional*, defaults to `True`):
+        normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
 
     .. seealso::
@@ -33,13 +38,13 @@ class JumanTokenizer(MainTokenizerABC):
 
     def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
         """Converts a string in a sequence of words.
-        Other kwargs (such as `never_split`) are ignored.
+        Other kwargs (such as *never_split*) are ignored.
 
         Args:
-            text (`str`): A sequence to be encoded.
+            text (``str``): A sequence to be encoded.
 
         Returns:
-            List[str]: A list of words.
+            ``List[str]``: A list of words.
         """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)
