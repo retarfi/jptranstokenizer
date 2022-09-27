@@ -12,6 +12,8 @@ build:
     python: "3.9"
   jobs:
     post_install:
+      # build available models page
+      - python ./docs/available_models.py
       # sphinx-apidoc
       - sphinx-apidoc -e -o ./docs/source/generated -t ./docs/template/ ./src/jptranstokenizer
 
