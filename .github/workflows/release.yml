@@ -83,7 +83,7 @@ jobs:
         tag_name: ${{ steps.get_version.outputs.TAG }}
         release_name: ${{ steps.get_version.outputs.TAG }}
         draft: false
-        prerelease: true
+        prerelease: false
         body: |
           This release is automatically generated.
           Please see the pull request.

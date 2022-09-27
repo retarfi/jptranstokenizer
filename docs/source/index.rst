@@ -3,24 +3,26 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to jptranstokenizer's documentation!
+jptranstokenizer documentation
 ============================================
-jptranstokenizer provides various combinations of main-word and sub-word tokenizers
+jptranstokenizer provides various combinations of main-word and sub-word tokenizers.  
+You can use :doc:`JapaneseTransformerTokenizer <generated/jptranstokenizer.tokenization_utils>` like ``transformers.BertJapaneseTokenizer``.
 
-Install:
+
+Install
+---------
 
 .. code-block:: none
 
    pip install jptranstokenizer
    python
    >> from jptranstokenizer import JapaneseTransformerTokenizer
-   >> tokenizer = JapaneseTransformerTokenizer.from_pretrained("nlp-waseda/roberta-base-japanese")
 
 
 .. toctree::
    :caption: User Guide
+   :maxdepth: 1
 
-   install.rst
    quickstart.rst
    available_models.rst
 

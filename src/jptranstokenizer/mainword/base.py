@@ -7,9 +7,9 @@ class MainTokenizerABC(ABC):
     """Abstract tokenizer class for main word division.
 
     Args:
-        do_lower_case (`bool`, *optional*, defaults to `False`):
+        do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.
-        normalize_text (`bool`, *optional*, defaults to `True`):
+        normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
     """
 
@@ -24,10 +24,10 @@ class MainTokenizerABC(ABC):
         """Devide the sequence into words.
 
         Args:
-            text (`str`): A sequence to be encoded.
+            text (``str``): A sequence to be encoded.
 
         Returns:
-            List[str]: A list of words.
+            ``List[str]``: A list of words.
         """
         pass
 
@@ -36,7 +36,7 @@ class Normalizer(MainTokenizerABC):
     """A main word tokenizer, which only normalize and make lower case.
 
     Args:
-        do_lower_case (`bool`, *optional*, defaults to `False`):
+        do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.
     """
 
@@ -46,13 +46,13 @@ class Normalizer(MainTokenizerABC):
     def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
         """Only normalize and make lower case tokenizer.
         Maybe called for dummy main tokenizer.
-        Other kwargs (such as `never_split`) are ignored.
+        Other kwargs (such as *never_split*) are ignored.
 
         Args:
-            text (str): A sequence to be encoded.
+            text (``str``): A sequence to be encoded.
 
         Returns:
-            List[str]: A list of a sentence.
+            ``List[str]``: A list of a sentence.
         """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)

@@ -8,11 +8,16 @@ class SpacyluwTokenizer(MainTokenizerABC):
     """Tokenizer to split into words using ja_gsdluw in spaCy.
     spaCy and ja_gsdluw is required to use.
     For installation, `spaCy <https://pypi.org/project/spacy/>`_ and `ja_gsdluw <https://github.com/megagonlabs/UD_Japanese-GSD/releases/tag/r2.9-NE>`_
+    You can import this module shortly:
+
+    .. code-block:: none
+
+       >> from jptranstokenizer.mainword import SpacyluwTokenizer
 
     Args:
-        do_lower_case (`bool`, *optional*, defaults to `False`):
+        do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.Defaults to None.
-        normalize_text (`bool`, *optional*, defaults to `True`):
+        normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
 
     .. seealso::
@@ -44,13 +49,13 @@ class SpacyluwTokenizer(MainTokenizerABC):
 
     def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
         """Converts a string in a sequence of words.
-        Other kwargs (such as `never_split`) are ignored.
+        Other kwargs (such as *never_split*) are ignored.
 
         Args:
-            text (`str`): A sequence to be encoded.
+            text (``str``): A sequence to be encoded.
 
         Returns:
-            List[str]: A list of words.
+            ``List[str]``: A list of words.
         """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)

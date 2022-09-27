@@ -12,22 +12,27 @@ class SudachiTokenizer(MainTokenizerABC):
     """Tokenizer to split into words using Sudachi.
     SudachiTra is required to use.
     For installation of SudachiTra, see https://pypi.org/project/SudachiTra/
+    You can import this module shortly:
+
+    .. code-block:: none
+
+       >> from jptranstokenizer.mainword import SudachiTokenizer
 
     Args:
-        split_mode (`str`, *optional*, defaults to "A"):
-            The mode of splitting. "A", "B", or "C" can be specified.
+        split_mode (``str``, *optional*, defaults to ``"A"``):
+            The mode of splitting. ``"A"``, ``"B"``, or ``"C"`` can be specified.
             For detail, see: `Sudachi#The modes of splitting <https://github.com/WorksApplications/Sudachi#the-modes-of-splitting>`_ or `Sudachi#分割モード <https://github.com/WorksApplications/Sudachi#%E5%88%86%E5%89%B2%E3%83%A2%E3%83%BC%E3%83%89>`_
-        config_path (`str`, *optional*):
+        config_path (``str``, *optional*):
             Path to a config file of SudachiPy to be used for the sudachi dictionary initialization.
-        resource_dir (`str`, *optional*):
-            Path to a resource dir containing resource files, such as "sudachi.json".
-        dict_type (`str`, *optional*, defaults to "core"):
+        resource_dir (``str``, *optional*):
+            Path to a resource dir containing resource files, such as ``"sudachi.json"``.
+        dict_type (``str``, *optional*, defaults to ``"core"``):
             Sudachi dictionary type to be used for tokenization.
-            "small", "core", or "full" can be specified.
+            ``"small"``, ``"core"``, or ``"full"`` can be specified.
             For detail, see: `Sudachi#Dictionaries <https://github.com/WorksApplications/Sudachi#dictionaries>`_ or `Sudachi#辞書の取得 <https://github.com/WorksApplications/Sudachi#%E8%BE%9E%E6%9B%B8%E3%81%AE%E5%8F%96%E5%BE%97>`_
-        do_lower_case (`bool`, *optional*, defaults to `False`):
+        do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.Defaults to None.
-        normalize_text (`bool`, *optional*, defaults to `True`):
+        normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
 
     .. seealso::
@@ -66,13 +71,13 @@ class SudachiTokenizer(MainTokenizerABC):
 
     def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
         """Converts a string in a sequence of words.
-        Other kwargs (such as `never_split`) are ignored.
+        Other kwargs (such as *never_split*) are ignored.
 
         Args:
-            text (`str`): A sequence to be encoded.
+            text (``str``): A sequence to be encoded.
 
         Returns:
-            List[str]: A list of words.
+            ``List[str]``: A list of words.
         """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)

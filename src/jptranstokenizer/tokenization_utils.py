@@ -43,52 +43,52 @@ logger = logging.get_logger()
 
 PUBLIC_AVAILABLE_SETTING_MAP: Dict[str, Dict[str, Union[str, bool]]] = {
     "cl-tohoku/bert-base-japanese": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     },
     "cl-tohoku/bert-base-japanese-v2": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "unidic_lite",
     },
     "cl-tohoku/bert-base-japanese-whole-word-masking": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     },
     "cl-tohoku/bert-large-japanese": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "unidic_lite",
     },
     "ken11/albert-base-japanese-v1-with-japanese-tokenizer": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     },
     "nlp-waseda/roberta-base-japanese": {
-        "word_tokenizer": "juman",
+        "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
     },
     "nlp-waseda/roberta-large-japanese": {
-        "word_tokenizer": "juman",
+        "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
     },
     "nlp-waseda/roberta-large-japanese-seq512": {
-        "word_tokenizer": "juman",
+        "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
     },
     "rinna/japanese-roberta-base": {
         "do_word_tokenize": False,
-        "word_tokenizer": "",
+        "word_tokenizer_type": "",
         "tokenizer_class": "T5Tokenizer",
     },
 }
 
 IZUMILAB_SETTING_MAP: Dict[str, Dict[str, str]] = {
     f"izumi-lab/{model_name}": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     }
@@ -122,30 +122,35 @@ def get_word_tokenizer(
     sudachi_resource_dir: Optional[str] = None,
     sudachi_dict_type: Optional[str] = "core",
 ):
-    """Main word tokenizer.
+    """Load mainword tokenizer dynamically.
+    You can import this module shortly:
+
+    .. code-block:: none
+
+       >> from jptranstokenizer import get_word_tokenizer
 
     Args:
-        word_tokenizer (`str`, defaults to `basic`):
-            Type of word tokenizer. "mecab", "juman", "spacy-luw", "sudachi", "basic", "none" can be specified.
-        normalize_text (`bool`, *optional*, defaults to `True`):
+        word_tokenizer_type (``str``, defaults to ``"basic"``):
+            Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"spacy-luw"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
+        normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
-        do_lower_case (`bool`, *optional*, defaults to `False`):
+        do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.
-        mecab_dic (`str`, *optional*, defaults to "ipadic"):
+        mecab_dic (``str``, *optional*, defaults to ``"ipadic"``):
             (For MeCab) Name of dictionary to be used for MeCab initialization.
-            Maybe `ipadic`, `unidic`, `unidic_lite` is used.
-            If you are using a system-installed dictionary, set this option to `None` and modify *mecab_option*.
-        mecab_option (`str`, *optional*):
+            Maybe ``"ipadic"``, ``"unidic"``, or ``"unidic_lite"`` is used.
+            If you are using a system-installed dictionary, set this option to ``None`` and modify *mecab_option*.
+        mecab_option (``str``, *optional*):
             (For MeCab) String passed to MeCab constructor.
-        sudachi_split_mode (`str`, *optional*, defaults to "A"):
-            (For Sudachi) The mode of splitting. "A", "B", or "C" can be specified.
-        sudachi_config_path (`str`, *optional*):
+        sudachi_split_mode (``str``, *optional*, defaults to ``"A"``):
+            (For Sudachi) The mode of splitting. ``"A"``, ``"B"``, or ``"C"`` can be specified.
+        sudachi_config_path (``str``, *optional*):
             (For Sudachi) Path to a config file of SudachiPy to be used for the sudachi dictionary initialization.
-        sudachi_resource_dir (`str`, *optional*):
-            (For Sudachi) Path to a resource dir containing resource files, such as "sudachi.json".
-        sudachi_dict_type (`str`, *optional*, defaults to "core"):
+        sudachi_resource_dir (``str``, *optional*):
+            (For Sudachi) Path to a resource dir containing resource files, such as ``"sudachi.json"``.
+        sudachi_dict_type (``str``, *optional*, defaults to ``"core"``):
             (For Sudachi) Sudachi dictionary type to be used for tokenization.
-            "small", "core", or "full" can be specified.
+            ``"small"``, ``"core"``, or ``"full"`` can be specified.
     """
     if word_tokenizer_type == "basic":
         logger.warn("Argument normalize_text is ignored")
@@ -197,62 +202,68 @@ def get_word_tokenizer(
 
 class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
     """Japanese tokenizer of main and sub word.
-    Inherited from `transformers.BertJapaneseTokenizer`.
+    Inherited from ``transformers.BertJapaneseTokenizer``.
+    You can import this module shortly:
+
+    .. code-block:: none
+
+       >> from jptranstokenizer import JapaneseTransformerTokenizer
 
     Args:
-        vocab_file (`str` or `os.PathLike`, *optional*, defaults to `""`):
+        vocab_file (``str`` or ``os.PathLike``, *optional*, defaults to ``""``):
             _description_.
-        word_tokenizer (`str`, *optional*, defaults to `"basic"`): _description_.
-        subword_tokenizer (`str`, *optional*, defaults to `"wordpiece"`):
-            _description_.
-        normalize_text (`bool`, *optional*, defaults to `True`):
+        word_tokenizer_type (``str``, defaults to `basic`):
+            Type of word tokenizer. "mecab", "juman", "spacy-luw", "sudachi", "basic", "none" (only normalize texts) can be specified.
+        subword_tokenizer_type (``str``, defaults to `"wordpiece"`):
+            Type of word tokenizer. "wordpiece", "sentencepiece", "character" (split by one token) can be specified.
+        normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
-        do_lower_case (`bool`, *optional*, defaults to `False`):
+        do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.
-        do_word_tokenize (`bool`, *optional*, defaults to `True`):
+        do_word_tokenize (``bool``, *optional*, defaults to ``True``):
             Whether to do (main) word tokenization.
-        do_subword_tokenize (`bool`, *optional*, defaults to `True`):
+        do_subword_tokenize (``bool``, *optional*, defaults to ``True``):
             Whether to do subword tokenization.
-        unk_token (`str` or `tokenizers.AddedToken`, *optional*):
+        unk_token (``str`` or ``tokenizers.AddedToken``, *optional*):
             A special token representing an out-of-vocabulary token.
-        sep_token (`str` or `tokenizers.AddedToken`, *optional*):
+        sep_token (``str`` or ``tokenizers.AddedToken``, *optional*):
             A special token separating two different sentences in the same input (used by BERT for instance).
-        pad_token (`str` or `tokenizers.AddedToken`, *optional*):
+        pad_token (``str`` or ``tokenizers.AddedToken``, *optional*):
             A special token used to make arrays of tokens the same size for batching purpose. Will then be ignored by
             attention mechanisms or loss computation.
-        cls_token (`str` or `tokenizers.AddedToken`, *optional*):
+        cls_token (``str`` or ``tokenizers.AddedToken``, *optional*):
             A special token representing the class of the input (used by BERT for instance).
-        mask_token (`str` or `tokenizers.AddedToken`, *optional*):
+        mask_token (``str`` or ``tokenizers.AddedToken``, *optional*):
             A special token representing a masked token (used by masked-language modeling pretraining objectives, like
             BERT).
-        call_from_pretrained (`bool`, *optional*, defaults to `False`):
+        call_from_pretrained (``bool``, *optional*, defaults to ``False``):
             Whether `__init__` is called from `from_pretrained`.
             You don't need to set manually.
-        mecab_dic (`str`, *optional*, defaults to "ipadic"):
+        mecab_dic (``str``, *optional*, defaults to ``"ipadic"``):
             (For MeCab) Name of dictionary to be used for MeCab initialization.
-            Maybe `ipadic`, `unidic`, `unidic_lite` is used.
-            If you are using a system-installed dictionary, set this option to `None` and modify *mecab_option*.
-        mecab_option (`str`, *optional*):
+            Maybe ``"ipadic"``, ``"unidic"``, ``"unidic_lite"`` is used.
+            If you are using a system-installed dictionary, set this option to ``None`` and modify *mecab_option*.
+        mecab_option (``str``, *optional*):
             (For MeCab) String passed to MeCab constructor.
-        sudachi_split_mode (`str`, *optional*, defaults to "A"):
-            (For Sudachi) The mode of splitting. "A", "B", or "C" can be specified.
-        sudachi_config_path (`str`, *optional*):
+        sudachi_split_mode (``str``, *optional*, defaults to ``"A"``):
+            (For Sudachi) The mode of splitting. ``"A"``, ``"B"``, or ``"C"`` can be specified.
+        sudachi_config_path (``str``, *optional*):
             (For Sudachi) Path to a config file of SudachiPy to be used for the sudachi dictionary initialization.
-        sudachi_resource_dir (`str`, *optional*):
-            (For Sudachi) Path to a resource dir containing resource files, such as "sudachi.json".
-        sudachi_dict_type (`str`, *optional*, defaults to "core"):
+        sudachi_resource_dir (``str``, *optional*):
+            (For Sudachi) Path to a resource dir containing resource files, such as ``"sudachi.json"``.
+        sudachi_dict_type (``str``, *optional*, defaults to ``"core"``):
             (For Sudachi) Sudachi dictionary type to be used for tokenization.
-            "small", "core", or "full" can be specified.
-        sp_model_kwargs (`str`, *optional*):
-            (For sentencepiece) Optional arguments for `sentencepiece.SentencePieceProcessor`.
+            ``"small"``, ``"core"``, or ``"full"`` can be specified.
+        sp_model_kwargs (``str``, *optional*):
+            (For sentencepiece) Optional arguments for ``sentencepiece.SentencePieceProcessor``.
 
     """
 
     def __init__(
         self,
-        vocab_file: Union[str, os.PathLike] = "",
-        word_tokenizer: str = "basic",
-        subword_tokenizer: str = "wordpiece",
+        vocab_file: Optional[Union[str, os.PathLike]] = None,
+        word_tokenizer_type: str = "basic",
+        subword_tokenizer_type: str = "wordpiece",
         normalize_text: bool = True,
         do_lower_case: bool = False,
         do_word_tokenize: bool = True,
@@ -279,26 +290,16 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             cls_token=cls_token,
             mask_token=mask_token,
             do_lower_case=do_lower_case,
-            do_word_tokenize=do_word_tokenize,
-            do_subword_tokenize=do_subword_tokenize,
-            word_tokenizer=word_tokenizer,
-            subword_tokenizer=subword_tokenizer,
             **kwargs,
         )
-        # ^^ We call the grandparent's init, not the parent's.
-
-        if not os.path.isfile(vocab_file) and not call_from_pretrained:
-            raise ValueError(
-                f"Can't find a vocabulary file at path '{vocab_file}'.\n"
-                "To load the vocabulary from a Google pretrained model use "
-                "`AutoTokenizer.from_pretrained(PRETRAINED_MODEL_NAME)`"
-            )
-
         self.do_word_tokenize = do_word_tokenize
-        self.lower_case = do_lower_case
+        self.do_subword_tokenize = do_subword_tokenize
+        self.word_tokenizer_type = word_tokenizer_type
+        self.subword_tokenizer_type = subword_tokenizer_type
+
         if do_word_tokenize:
             self.word_tokenizer = get_word_tokenizer(
-                word_tokenizer_type=word_tokenizer,
+                word_tokenizer_type=word_tokenizer_type,
                 normalize_text=normalize_text,
                 do_lower_case=do_lower_case,
                 mecab_dic=mecab_dic,
@@ -309,14 +310,19 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 sudachi_dict_type=sudachi_dict_type,
             )
 
-        self.do_subword_tokenize = do_subword_tokenize
-        self.subword_tokenizer_type = subword_tokenizer
         if self.do_subword_tokenize and not call_from_pretrained:
             if self.subword_tokenizer_type in ["wordpiece", "character"]:
+                if not os.path.isfile(vocab_file):
+                    raise ValueError(
+                        f"Can't find a vocabulary file at path '{vocab_file}'.\n"
+                        "To load the vocabulary from a Google pretrained model use "
+                        "`AutoTokenizer.from_pretrained(PRETRAINED_MODEL_NAME)`"
+                    )
                 self.vocab = load_vocab(vocab_file)
                 self.ids_to_tokens = collections.OrderedDict(
                     [(ids, tok) for tok, ids in self.vocab.items()]
                 )
+
             if self.subword_tokenizer_type == "wordpiece":
                 self.subword_tokenizer = WordpieceTokenizer(
                     vocab=self.vocab, unk_token=self.unk_token
@@ -329,7 +335,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 from .subword import SentencepieceTokenizer
 
                 self.subword_tokenizer = SentencepieceTokenizer(
-                    vocab_file=str(vocab_file), sp_model_kwargs=sp_model_kwargs
+                    vocab_file=vocab_file, sp_model_kwargs=sp_model_kwargs
                 )
                 self.vocab = self.subword_tokenizer.vocab
                 self.ids_to_tokens = collections.OrderedDict(
@@ -340,7 +346,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 )
             else:
                 raise ValueError(
-                    f"Invalid subword_tokenizer '{subword_tokenizer}' is specified."
+                    f"Invalid subword_tokenizer_type '{subword_tokenizer_type}' is specified."
                 )
         # This is needed for leave special tokens as it is when tokenizing
         self.unique_no_split_tokens = list(self.special_tokens_map.values())
@@ -350,52 +356,53 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
     @classmethod
     def from_pretrained(cls, tokenizer_name_or_path: Union[str, os.PathLike], **kwargs):
         """
-        Instantiate a `transformers.BertJapaneseTokenizer` (or a derived class) from a predefined tokenizer.
+        Instantiate a ``transformers.BertJapaneseTokenizer`` (or a derived class) from a predefined tokenizer.
 
         Args:
-            tokenizer_name_or_path (`str` or `os.PathLike`):
+            tokenizer_name_or_path (``str`` or ``os.PathLike``):
                 Can be either:
 
                 - A string, the *model id* of a predefined tokenizer hosted inside
-                  a model repo on huggingface.co. Valid model ids can be namespaced under auser or organization name, like `cl-tohoku/bert-base-japanese`.
+                  a model repo on huggingface.co. Valid model ids can be namespaced under auser or organization name, like ``cl-tohoku/bert-base-japanese``.
                 - A path to a *directory* containing vocabulary files required by the tokenizer, for instance saved
-                  using the `~tokenization_utils_base.PreTrainedTokenizerBase.save_pretrained` method, e.g.,
-                  `./my_model_directory/`.
+                  using the ``transformers.tokenization_utils_base.PreTrainedTokenizerBase.save_pretrained`` method, e.g.,
+                  ``./my_model_directory/``.
                 - (**Deprecated**, not applicable to all derived classes) A path or url to a single saved vocabulary
                   file (if and only if the tokenizer only requires a single vocabulary file like Bert or XLNet), e.g.,
-                  `./my_model_directory/vocab.txt`.
-            word_tokenizer (`str`, defaults to `basic`):
-                Type of word tokenizer. "mecab", "juman", "spacy-luw", "sudachi", "basic", "none" can be specified.
-            tokenizer_class (`str`, *optional*):
-                Must be specified when `tokenizer_name_or_path` is not in the supported list
-            normalize_text (`bool`, *optional*, defaults to `True`):
+                  ``./my_model_directory/vocab.txt``.
+            word_tokenizer_type (``str``, defaults to ``"basic"``):
+                Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"spacy-luw"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
+            tokenizer_class (``str``, *optional*):
+                Must be specified when `tokenizer_name_or_path` is not in the supported list.
+                ``"AlbertTokenizer"``, ``"T5Tokenizer"``, and ``"BertJapaneseTokenizer"`` (whose classes are in transformers library) are available.
+            normalize_text (``bool``, *optional*, defaults to ``True``):
                 Whether to apply unicode normalization to text before tokenization.
-            do_lower_case (`bool`, *optional*, defaults to `False`):
+            do_lower_case (``bool``, *optional*, defaults to ``False``):
                 Whether or not to lowercase the input when tokenizing.
-            do_word_tokenize (`bool`, *optional*, defaults to `True`):
+            do_word_tokenize (``bool``, *optional*, defaults to ``True``):
                 Whether to do (main) word tokenization.
-            mecab_dic (`str`, *optional*, defaults to "ipadic"):
+            mecab_dic (``str``, *optional*, defaults to ``"ipadic"``):
                 (For MeCab) Name of dictionary to be used for MeCab initialization.
-                Maybe `ipadic`, `unidic`, `unidic_lite` is used.
+                Maybe ``"ipadic"``, ``"unidic"``, ``"unidic_lite"`` is used.
                 If you are using a system-installed dictionary, set this option to `None` and modify *mecab_option*.
-            mecab_option (`str`, *optional*):
+            mecab_option (``str``, *optional*):
                 (For MeCab) String passed to MeCab constructor.
-            sudachi_split_mode (`str`, *optional*, defaults to "A"):
-                (For Sudachi) The mode of splitting. "A", "B", or "C" can be specified.
-            sudachi_config_path (`str`, *optional*):
+            sudachi_split_mode (``str``, *optional*, defaults to ``"A"``):
+                (For Sudachi) The mode of splitting. ``"A"``, ``"B"``, or ``"C"`` can be specified.
+            sudachi_config_path (``str``, *optional*):
                 (For Sudachi) Path to a config file of SudachiPy to be used for the sudachi dictionary initialization.
-            sudachi_resource_dir (`str`, *optional*):
-                (For Sudachi) Path to a resource dir containing resource files, such as "sudachi.json".
-            sudachi_dict_type (`str`, *optional*, defaults to "core"):
+            sudachi_resource_dir (``str``, *optional*):
+                (For Sudachi) Path to a resource dir containing resource files, such as ``"sudachi.json"``.
+            sudachi_dict_type (``str``, *optional*, defaults to ``"core"``):
                 (For Sudachi) Sudachi dictionary type to be used for tokenization.
-                "small", "core", or "full" can be specified.
-            sp_model_kwargs (`Dict[str, Any]`, *optional*):
-                (For sentencepiece) Optional arguments for `sentencepiece.SentencePieceProcessor`.
+                ``"small"``, ``"core"``, or ``"full"`` can be specified.
+            sp_model_kwargs (``Dict[str, Any]``, *optional*):
+                (For sentencepiece) Optional arguments for ``sentencepiece.SentencePieceProcessor``.
         """
 
         def _from_pretrained(
             tokenizer_class: str,
-            word_tokenizer: str = "basic",
+            word_tokenizer_type: str = "basic",
             normalize_text: bool = True,
             do_lower_case: bool = False,
             do_word_tokenize: bool = True,
@@ -450,8 +457,8 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             else:
                 raise NotImplementedError()
             tokenizer = cls(
-                word_tokenizer=word_tokenizer,
-                subword_tokenizer=subword_tokenizer_type,
+                word_tokenizer_type=word_tokenizer_type,
+                subword_tokenizer_type=subword_tokenizer_type,
                 normalize_text=normalize_text,
                 do_lower_case=do_lower_case,
                 do_word_tokenize=do_word_tokenize,
@@ -497,7 +504,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             for k, v in dct_setting.items():
                 kwargs[k] = v
         else:
-            if kwargs["word_tokenizer"] is None:
+            if kwargs["word_tokenizer_type"] is None:
                 raise ValueError("word_tokenizer must be specified")
             if kwargs["tokenizer_class"] is None:
                 raise ValueError("tokenizer_class must be specified")
