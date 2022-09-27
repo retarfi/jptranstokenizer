@@ -43,52 +43,52 @@ logger = logging.get_logger()
 
 PUBLIC_AVAILABLE_SETTING_MAP: Dict[str, Dict[str, Union[str, bool]]] = {
     "cl-tohoku/bert-base-japanese": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     },
     "cl-tohoku/bert-base-japanese-v2": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "unidic_lite",
     },
     "cl-tohoku/bert-base-japanese-whole-word-masking": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     },
     "cl-tohoku/bert-large-japanese": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "unidic_lite",
     },
     "ken11/albert-base-japanese-v1-with-japanese-tokenizer": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     },
     "nlp-waseda/roberta-base-japanese": {
-        "word_tokenizer": "juman",
+        "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
     },
     "nlp-waseda/roberta-large-japanese": {
-        "word_tokenizer": "juman",
+        "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
     },
     "nlp-waseda/roberta-large-japanese-seq512": {
-        "word_tokenizer": "juman",
+        "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
     },
     "rinna/japanese-roberta-base": {
         "do_word_tokenize": False,
-        "word_tokenizer": "",
+        "word_tokenizer_type": "",
         "tokenizer_class": "T5Tokenizer",
     },
 }
 
 IZUMILAB_SETTING_MAP: Dict[str, Dict[str, str]] = {
     f"izumi-lab/{model_name}": {
-        "word_tokenizer": "mecab",
+        "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     }
@@ -290,12 +290,12 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             cls_token=cls_token,
             mask_token=mask_token,
             do_lower_case=do_lower_case,
-            do_word_tokenize=do_word_tokenize,
-            do_subword_tokenize=do_subword_tokenize,
-            word_tokenizer_type=word_tokenizer_type,
-            subword_tokenizer_type=subword_tokenizer_type,
             **kwargs,
         )
+        self.do_word_tokenize = do_word_tokenize
+        self.do_subword_tokenize = do_subword_tokenize
+        self.word_tokenizer_type = word_tokenizer_type
+        self.subword_tokenizer_type = subword_tokenizer_type
 
         if do_word_tokenize:
             self.word_tokenizer = get_word_tokenizer(
@@ -504,7 +504,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             for k, v in dct_setting.items():
                 kwargs[k] = v
         else:
-            if kwargs["word_tokenizer"] is None:
+            if kwargs["word_tokenizer_type"] is None:
                 raise ValueError("word_tokenizer must be specified")
             if kwargs["tokenizer_class"] is None:
                 raise ValueError("tokenizer_class must be specified")
