@@ -32,7 +32,7 @@ pip install jptranstokenizer
 
 ## Quickstart
 
-This is the example to use `jptranstokenizer.JapaneseTransformerTokenizer` with [sentencepiece mode of nlp-waseda/roberta-base-japanese](https://huggingface.co/nlp-waseda/roberta-base-japanese) and Juman++.  
+This is the example to use `jptranstokenizer.JapaneseTransformerTokenizer` with [sentencepiece model of nlp-waseda/roberta-base-japanese](https://huggingface.co/nlp-waseda/roberta-base-japanese) and Juman++.  
 Before the following steps, you need to **install pyknp and Juman++**.
 
 ```python
