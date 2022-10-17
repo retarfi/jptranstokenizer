@@ -40,4 +40,9 @@ jobs:
     - name: pyest
       run: |
         poetry run black --check --diff --quiet --skip-magic-trailing-comma .
-        poetry run pytest tests/
+        poetry run pytest --cov=./ --cov-report=xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        fail_ci_if_error: true
+        verbose: true

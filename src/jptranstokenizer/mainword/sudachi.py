@@ -34,6 +34,9 @@ class SudachiTokenizer(MainTokenizerABC):
             Whether or not to lowercase the input when tokenizing.Defaults to None.
         normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
+        ignore_max_byte_error (``bool``, *optional*, defaults to ``False``):
+            Whether or not to ignore error of max bytes (only valid with Juman and Sudachi).
+            If valid, the tokenizer return empty list.
 
     .. seealso::
         - SudachiTra https://github.com/WorksApplications/SudachiTra
@@ -48,9 +51,11 @@ class SudachiTokenizer(MainTokenizerABC):
         dict_type: Optional[str] = "core",
         do_lower_case: bool = False,
         normalize_text: bool = True,
+        ignore_max_byte_error: bool = False,
     ):
 
         super().__init__(do_lower_case=do_lower_case, normalize_text=normalize_text)
+        self.ignore_max_byte_error = ignore_max_byte_error
         try:
             from sudachitra.sudachipy_word_tokenizer import SudachipyWordTokenizer
             from sudachitra.word_formatter import word_formatter
@@ -81,11 +86,14 @@ class SudachiTokenizer(MainTokenizerABC):
         """
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)
-
-        tokens = [
-            self.word_formatter(token)
-            for token in self.sudachi_tokenizer.tokenize(text)
-        ]
-        if self.do_lower_case:
-            tokens = [token.lower() for token in tokens]
+        tokens: List[str]
+        if self.ignore_max_byte_error and len(text.encode()) > 4096:
+            tokens = []
+        else:
+            tokens = [
+                self.word_formatter(token)
+                for token in self.sudachi_tokenizer.tokenize(text)
+            ]
+            if self.do_lower_case:
+                tokens = [token.lower() for token in tokens]
         return tokens

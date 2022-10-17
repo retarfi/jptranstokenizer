@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jptranstokenizer"
-version = "0.1.0"
+version = "0.1.1"
 description = "Japanese tokenizer with transformers library"
 authors = ["Masahiro Suzuki <msuzuki9609@gmail.com>"]
 license = "MIT"
@@ -9,11 +9,12 @@ packages = [{include = "jptranstokenizer", from = "src"}]
 
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 transformers = "^4.7.0"
 pyknp = "^0.6.1"
 sentencepiece = "^0.1.96"
 spacy = "^3.2.0"
+ja-gsdluw = {url = "https://github.com/megagonlabs/UD_Japanese-GSD/releases/download/r2.9-NE/ja_gsdluw-3.2.0-py3-none-any.whl"}
 SudachiTra = "^0.1.7"
 
 
@@ -22,6 +23,7 @@ black = "^22.6.0"
 isort = "^5.10.1"
 mypy = "^0.971"
 pytest = "^7.1.2"
+pytest-cov = "^3.0.0"
 Sphinx = "5.1.1"
 sphinx-rtd-theme = "^1.0.0"
 fugashi = "^1.2.0"
