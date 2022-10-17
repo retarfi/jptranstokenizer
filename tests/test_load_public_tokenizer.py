@@ -12,6 +12,29 @@ sentence_3: str = "魔法少女リリカルなのは"
 #     tku.JapaneseTransformerTokenizer.from_pretrained(model_name)
 
 
+def test_special_tokens() -> None:
+    tokenizer: JapaneseTransformerTokenizer = (
+        JapaneseTransformerTokenizer.from_pretrained("cl-tohoku/bert-base-japanese")
+    )
+    lst_tokens: List[str] = [
+        "[CLS]",
+        "国境",
+        "の",
+        "[MASK]",
+        "トンネル",
+        "を",
+        "抜ける",
+        "と",
+        "[UNK]",
+        "で",
+        "あっ",
+        "た",
+        "。",
+        "[SEP]",
+    ]
+    assert tokenizer.tokenize("[CLS]国境の[MASK]トンネルを抜けると[UNK]であった。[SEP]") == lst_tokens
+
+
 def test_cltohoku_bertbasejapanese() -> None:
     tokenizer: JapaneseTransformerTokenizer = (
         JapaneseTransformerTokenizer.from_pretrained("cl-tohoku/bert-base-japanese")

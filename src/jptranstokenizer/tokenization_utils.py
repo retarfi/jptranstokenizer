@@ -114,6 +114,7 @@ PUBLIC_AVAILABLE_SETTING_MAP.update(IZUMILAB_SETTING_MAP)
 def get_word_tokenizer(
     word_tokenizer_type: str,
     normalize_text: bool = True,
+    ignore_max_byte_error: bool = False,
     do_lower_case: bool = False,
     mecab_dic: Optional[str] = "ipadic",
     mecab_option: Optional[str] = None,
@@ -136,6 +137,9 @@ def get_word_tokenizer(
             Whether to apply unicode normalization to text before tokenization.
         do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.
+        ignore_max_byte_error (``bool``, *optional*, defaults to ``False``):
+            Whether or not to ignore error of max bytes (only valid with Juman and Sudachi).
+            If valid, the tokenizer return empty list.
         mecab_dic (``str``, *optional*, defaults to ``"ipadic"``):
             (For MeCab) Name of dictionary to be used for MeCab initialization.
             Maybe ``"ipadic"``, ``"unidic"``, or ``"unidic_lite"`` is used.
@@ -168,7 +172,9 @@ def get_word_tokenizer(
         from .mainword import JumanTokenizer
 
         word_tokenizer = JumanTokenizer(
-            do_lower_case=do_lower_case, normalize_text=normalize_text
+            do_lower_case=do_lower_case,
+            normalize_text=normalize_text,
+            ignore_max_byte_error=ignore_max_byte_error,
         )
     elif word_tokenizer_type == "spacy-luw":
         from .mainword import SpacyluwTokenizer
@@ -182,6 +188,7 @@ def get_word_tokenizer(
         word_tokenizer = SudachiTokenizer(
             do_lower_case=do_lower_case,
             normalize_text=normalize_text,
+            ignore_max_byte_error=ignore_max_byte_error,
             split_mode=sudachi_split_mode,
             config_path=sudachi_config_path,
             resource_dir=sudachi_resource_dir,
@@ -220,6 +227,9 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             Whether to apply unicode normalization to text before tokenization.
         do_lower_case (``bool``, *optional*, defaults to ``False``):
             Whether or not to lowercase the input when tokenizing.
+        ignore_max_byte_error (``bool``, *optional*, defaults to ``False``):
+            Whether or not to ignore error of max bytes (only valid with Juman and Sudachi).
+            If valid, the tokenizer return empty list.
         do_word_tokenize (``bool``, *optional*, defaults to ``True``):
             Whether to do (main) word tokenization.
         do_subword_tokenize (``bool``, *optional*, defaults to ``True``):
@@ -265,6 +275,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         word_tokenizer_type: str = "basic",
         subword_tokenizer_type: str = "wordpiece",
         normalize_text: bool = True,
+        ignore_max_byte_error: bool = False,
         do_lower_case: bool = False,
         do_word_tokenize: bool = True,
         do_subword_tokenize: bool = True,
@@ -301,6 +312,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             self.word_tokenizer = get_word_tokenizer(
                 word_tokenizer_type=word_tokenizer_type,
                 normalize_text=normalize_text,
+                ignore_max_byte_error=ignore_max_byte_error,
                 do_lower_case=do_lower_case,
                 mecab_dic=mecab_dic,
                 mecab_option=mecab_option,
@@ -353,6 +365,15 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         if self.subword_tokenizer_type == "sentencepiece":
             self.save_vocabulary = AlbertTokenizer.save_vocabulary
 
+        if not call_from_pretrained:
+            # Check all our special tokens are registered as "no split" token (we don't cut them) and are in the vocab
+            added_tokens = self.sanitize_special_tokens()
+            if added_tokens:
+                logger.warning_advice(
+                    "Special tokens have been added in the vocabulary, make sure the associated word embeddings are"
+                    " fine-tuned or trained."
+                )
+
     @classmethod
     def from_pretrained(cls, tokenizer_name_or_path: Union[str, os.PathLike], **kwargs):
         """
@@ -377,6 +398,9 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 ``"AlbertTokenizer"``, ``"T5Tokenizer"``, and ``"BertJapaneseTokenizer"`` (whose classes are in transformers library) are available.
             normalize_text (``bool``, *optional*, defaults to ``True``):
                 Whether to apply unicode normalization to text before tokenization.
+            ignore_max_byte_error (``bool``, *optional*, defaults to ``False``):
+                Whether or not to ignore error of max bytes (only valid with Juman and Sudachi).
+                If valid, the tokenizer return empty list.
             do_lower_case (``bool``, *optional*, defaults to ``False``):
                 Whether or not to lowercase the input when tokenizing.
             do_word_tokenize (``bool``, *optional*, defaults to ``True``):
@@ -404,6 +428,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             tokenizer_class: str,
             word_tokenizer_type: str = "basic",
             normalize_text: bool = True,
+            ignore_max_byte_error: bool = False,
             do_lower_case: bool = False,
             do_word_tokenize: bool = True,
             mecab_dic: Optional[str] = "ipadic",
@@ -460,6 +485,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 word_tokenizer_type=word_tokenizer_type,
                 subword_tokenizer_type=subword_tokenizer_type,
                 normalize_text=normalize_text,
+                ignore_max_byte_error=ignore_max_byte_error,
                 do_lower_case=do_lower_case,
                 do_word_tokenize=do_word_tokenize,
                 do_subword_tokenize=True,
@@ -484,6 +510,13 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             tokenizer.unique_no_split_tokens = list(
                 tokenizer.special_tokens_map.values()
             )
+            # Check all our special tokens are registered as "no split" token (we don't cut them) and are in the vocab
+            added_tokens = tokenizer.sanitize_special_tokens()
+            if added_tokens:
+                logger.warning_advice(
+                    "Special tokens have been added in the vocabulary, make sure the associated word embeddings are"
+                    " fine-tuned or trained."
+                )
             return tokenizer
 
         if tokenizer_name_or_path in [
