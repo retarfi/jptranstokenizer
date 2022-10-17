@@ -37,7 +37,7 @@ jobs:
         python -m pip install poetry
         poetry install
         poetry add https://github.com/megagonlabs/UD_Japanese-GSD/releases/download/r2.9-NE/ja_gsdluw-3.2.0-py3-none-any.whl
-    - name: pyest
+    - name: pytest
       run: |
         poetry run black --check --diff --quiet --skip-magic-trailing-comma .
         poetry run pytest --cov=./ --cov-report=xml
