@@ -51,7 +51,7 @@ class SudachiTokenizer(MainTokenizerABC):
         dict_type: Optional[str] = "core",
         do_lower_case: bool = False,
         normalize_text: bool = True,
-        ignore_max_byte_error: bool = False
+        ignore_max_byte_error: bool = False,
     ):
 
         super().__init__(do_lower_case=do_lower_case, normalize_text=normalize_text)
