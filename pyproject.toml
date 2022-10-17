@@ -9,11 +9,12 @@ packages = [{include = "jptranstokenizer", from = "src"}]
 
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.7"
 transformers = "^4.7.0"
 pyknp = "^0.6.1"
 sentencepiece = "^0.1.96"
 spacy = "^3.2.0"
+ja-gsdluw = {url = "https://github.com/megagonlabs/UD_Japanese-GSD/releases/download/r2.9-NE/ja_gsdluw-3.2.0-py3-none-any.whl"}
 SudachiTra = "^0.1.7"
 
 
