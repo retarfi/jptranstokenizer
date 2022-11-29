@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, List
 
+SPIECE_UNDERLINE = "▁"
 
 class SentencepieceTokenizer:
     """Runs sentencepiece tokenization.
@@ -58,5 +59,18 @@ class SentencepieceTokenizer:
         Returns:
             ``List[str]``: A list of sentencepiece tokens.
         """
-        tokens: List[str] = self.spm.encode_as_pieces(text)
+        pieces: List[str] = self.spm.encode(text)
+        tokens: List[str] = []
+        for piece in pieces:
+            if len(piece) > 1 and piece[-1] == str(",") and piece[-2].isdigit():
+                cur_pieces = self.sp_model.EncodeAsPieces(piece[:-1].replace(SPIECE_UNDERLINE, ""))
+                if piece[0] != SPIECE_UNDERLINE and cur_pieces[0][0] == SPIECE_UNDERLINE:
+                    if len(cur_pieces[0]) == 1:
+                        cur_pieces = cur_pieces[1:]
+                    else:
+                        cur_pieces[0] = cur_pieces[0][1:]
+                cur_pieces.append(piece[-1])
+                tokens.extend(cur_pieces)
+            else:
+                tokens.append(piece)
         return tokens
