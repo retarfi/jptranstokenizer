@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
 
 import transformers
-from transformers import AlbertTokenizer, BertJapaneseTokenizer, BertTokenizer, logging
+from transformers import AlbertTokenizer, BertJapaneseTokenizer, PreTrainedTokenizer, logging
 from transformers.models.bert.tokenization_bert import (
     BasicTokenizer,
     WordpieceTokenizer,
@@ -294,7 +294,8 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         sp_model_kwargs: Optional[Dict[str, Any]] = None,
         **kwargs,
     ):
-        super(BertTokenizer, self).__init__(
+        PreTrainedTokenizer.__init__(
+            self,
             unk_token=unk_token,
             sep_token=sep_token,
             pad_token=pad_token,
