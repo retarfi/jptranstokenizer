@@ -1,0 +1,1 @@
+{"unk_token": "[UNK]", "sep_token": "[SEP]", "pad_token": "[PAD]", "cls_token": "[CLS]", "mask_token": "[MASK]", "do_lower_case": false, "do_word_tokenize": true, "do_subword_tokenize": true, "word_tokenizer_type": "mecab", "subword_tokenizer_type": "wordpiece", "never_split": null, "mecab_kwargs": {"mecab_dic": "ipadic"}, "tokenize_chinese_chars": false}
