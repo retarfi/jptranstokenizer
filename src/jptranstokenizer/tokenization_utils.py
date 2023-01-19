@@ -4,7 +4,12 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
 
 import transformers
-from transformers import AlbertTokenizer, BertJapaneseTokenizer, PreTrainedTokenizer, logging
+from transformers import (
+    AlbertTokenizer,
+    BertJapaneseTokenizer,
+    PreTrainedTokenizer,
+    logging,
+)
 from transformers.models.bert.tokenization_bert import (
     BasicTokenizer,
     WordpieceTokenizer,
@@ -67,17 +72,35 @@ PUBLIC_AVAILABLE_SETTING_MAP: Dict[str, Dict[str, Union[str, bool]]] = {
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
     },
+    "ku-nlp/deberta-v2-base-japanese": {
+        "word_tokenizer_type": "juman",
+        "tokenizer_class": "DebertaV2Tokenizer",
+        "do_subword_by_word": False,
+    },
+    "ku-nlp/deberta-v2-large-japanese": {
+        "word_tokenizer_type": "juman",
+        "tokenizer_class": "DebertaV2Tokenizer",
+        "do_subword_by_word": False,
+    },
+    "ku-nlp/deberta-v2-tiny-japanese": {
+        "word_tokenizer_type": "juman",
+        "tokenizer_class": "DebertaV2Tokenizer",
+        "do_subword_by_word": False,
+    },
     "nlp-waseda/roberta-base-japanese": {
         "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
+        "do_subword_by_word": False,
     },
     "nlp-waseda/roberta-large-japanese": {
         "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
+        "do_subword_by_word": False,
     },
     "nlp-waseda/roberta-large-japanese-seq512": {
         "word_tokenizer_type": "juman",
         "tokenizer_class": "AlbertTokenizer",
+        "do_subword_by_word": False,
     },
     "rinna/japanese-roberta-base": {
         "do_word_tokenize": False,
@@ -234,6 +257,9 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             Whether to do (main) word tokenization.
         do_subword_tokenize (``bool``, *optional*, defaults to ``True``):
             Whether to do subword tokenization.
+        do_subword_by_word (``bool``, *optional*, defaults to ``True``):
+            Whether to apply subword tokenization by word or not.
+            In case ``False``, subword tokenization is performed to the whole input with spaceat once.
         unk_token (``str`` or ``tokenizers.AddedToken``, *optional*):
             A special token representing an out-of-vocabulary token.
         sep_token (``str`` or ``tokenizers.AddedToken``, *optional*):
@@ -266,7 +292,6 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             ``"small"``, ``"core"``, or ``"full"`` can be specified.
         sp_model_kwargs (``str``, *optional*):
             (For sentencepiece) Optional arguments for ``sentencepiece.SentencePieceProcessor``.
-
     """
 
     def __init__(
@@ -279,6 +304,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         do_lower_case: bool = False,
         do_word_tokenize: bool = True,
         do_subword_tokenize: bool = True,
+        do_subword_by_word: bool = True,
         unk_token: Optional[Union[str, AddedToken]] = "[UNK]",
         sep_token: Optional[Union[str, AddedToken]] = "[SEP]",
         pad_token: Optional[Union[str, AddedToken]] = "[PAD]",
@@ -306,6 +332,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         )
         self.do_word_tokenize = do_word_tokenize
         self.do_subword_tokenize = do_subword_tokenize
+        self.do_subword_by_word = do_subword_by_word
         self.word_tokenizer_type = word_tokenizer_type
         self.subword_tokenizer_type = subword_tokenizer_type
 
@@ -406,6 +433,9 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 Whether or not to lowercase the input when tokenizing.
             do_word_tokenize (``bool``, *optional*, defaults to ``True``):
                 Whether to do (main) word tokenization.
+            do_subword_by_word (``bool``, *optional*, defaults to ``True``):
+                Whether to apply subword tokenization by word or not.
+                In case ``False``, subword tokenization is performed to the whole input with spaceat once.
             mecab_dic (``str``, *optional*, defaults to ``"ipadic"``):
                 (For MeCab) Name of dictionary to be used for MeCab initialization.
                 Maybe ``"ipadic"``, ``"unidic"``, ``"unidic_lite"`` is used.
@@ -432,6 +462,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             ignore_max_byte_error: bool = False,
             do_lower_case: bool = False,
             do_word_tokenize: bool = True,
+            do_subword_by_word: bool = True,
             mecab_dic: Optional[str] = "ipadic",
             mecab_option: Optional[str] = None,
             sudachi_split_mode: Optional[str] = "A",
@@ -450,17 +481,29 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             tentative_tokenizer = tokenizer_class.from_pretrained(
                 tokenizer_name_or_path, *init_inputs, **kwargs
             )
-            if isinstance(tentative_tokenizer, transformers.T5Tokenizer) or isinstance(
-                tentative_tokenizer, transformers.AlbertTokenizer
+            if isinstance(
+                tentative_tokenizer,
+                (
+                    transformers.AlbertTokenizer,
+                    transformers.DebertaTokenizer,
+                    transformers.DebertaV2Tokenizer,
+                    transformers.T5Tokenizer,
+                ),
             ):
                 # sentencepiece
                 subword_tokenizer_type = "sentencepiece"
+                if isinstance(
+                    tentative_tokenizer,
+                    (transformers.AlbertTokenizer, transformers.T5Tokenizer),
+                ):
+                    spm = tentative_tokenizer.sp_model
+                else:
+                    # Deberta or DebertaV2
+                    spm = tentative_tokenizer._tokenizer.spm
                 from .subword import SentencepieceTokenizer
 
                 subword_tokenizer = SentencepieceTokenizer(
-                    vocab_file=None,
-                    sp_model_kwargs=sp_model_kwargs,
-                    spm=tentative_tokenizer.sp_model,
+                    vocab_file=None, sp_model_kwargs=sp_model_kwargs, spm=spm
                 )
                 vocab = subword_tokenizer.vocab
                 ids_to_tokens = collections.OrderedDict(
@@ -490,6 +533,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 do_lower_case=do_lower_case,
                 do_word_tokenize=do_word_tokenize,
                 do_subword_tokenize=True,
+                do_subword_by_word=do_subword_by_word,
                 unk_token=tentative_tokenizer.special_tokens_map["unk_token"],
                 sep_token=tentative_tokenizer.special_tokens_map["sep_token"],
                 pad_token=tentative_tokenizer.special_tokens_map["pad_token"],
@@ -543,6 +587,28 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             if kwargs["tokenizer_class"] is None:
                 raise ValueError("tokenizer_class must be specified")
         return _from_pretrained(**kwargs)
+
+    def _tokenize(self, text):
+        if self.do_word_tokenize:
+            tokens = self.word_tokenizer.tokenize(
+                text, never_split=self.all_special_tokens
+            )
+        else:
+            tokens = [text]
+
+        if self.do_subword_tokenize:
+            if self.do_subword_by_word:
+                split_tokens = [
+                    sub_token
+                    for token in tokens
+                    for sub_token in self.subword_tokenizer.tokenize(token)
+                ]
+            else:
+                split_tokens = self.subword_tokenizer.tokenize(" ".join(tokens))
+        else:
+            split_tokens = tokens
+
+        return split_tokens
 
     def convert_tokens_to_string(self, tokens: List[str]):
         if self.subword_tokenizer_type in ["character", "wordpiece"]:

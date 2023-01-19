@@ -1,128 +1,208 @@
 from typing import List
 
+import pytest
+
 from src.jptranstokenizer import JapaneseTransformerTokenizer
 
-sentence_1: str = "未来科学部でコンビニ店員になりきってお釣りを返していこう！"
-sentence_2: str = "外国人参政権"
-sentence_3: str = "魔法少女リリカルなのは"
 
-
-# @pytest.mark.parametrize("model_name", list(tku.PUBLIC_AVAILABLE_SETTING_MAP.keys()))
-# def test_public_tokenizer(model_name: str) -> None:
-#     tku.JapaneseTransformerTokenizer.from_pretrained(model_name)
-
-
-def test_special_tokens() -> None:
-    tokenizer: JapaneseTransformerTokenizer = (
-        JapaneseTransformerTokenizer.from_pretrained("cl-tohoku/bert-base-japanese")
-    )
-    lst_tokens: List[str] = [
-        "[CLS]",
-        "国境",
-        "の",
-        "[MASK]",
-        "トンネル",
-        "を",
-        "抜ける",
-        "と",
-        "[UNK]",
-        "で",
-        "あっ",
-        "た",
-        "。",
-        "[SEP]",
+@pytest.mark.parametrize(
+    "pretrained_model, lst_tokens",
+    [
+        (
+            "cl-tohoku/bert-base-japanese",
+            [
+                [
+                    "未来",
+                    "科学",
+                    "部",
+                    "で",
+                    "コンビニ",
+                    "店員",
+                    "に",
+                    "なり",
+                    "きっ",
+                    "て",
+                    "お",
+                    "##釣",
+                    "##り",
+                    "を",
+                    "返し",
+                    "て",
+                    "いこ",
+                    "う",
+                    "!",
+                ],
+                ["外国", "人", "##参", "政権"],
+                ["魔法", "少女", "リ", "##リカル", "な", "の", "は"],
+                [
+                    "[CLS]",
+                    "国境",
+                    "の",
+                    "[MASK]",
+                    "トンネル",
+                    "を",
+                    "抜ける",
+                    "と",
+                    "[UNK]",
+                    "で",
+                    "あっ",
+                    "た",
+                    "。",
+                    "[SEP]",
+                ],
+            ],
+        ),
+        (
+            "cl-tohoku/bert-base-japanese-v2",
+            [
+                [
+                    "未来",
+                    "科学",
+                    "部",
+                    "で",
+                    "コンビニ",
+                    "店員",
+                    "に",
+                    "なり",
+                    "きっ",
+                    "て",
+                    "お",
+                    "釣り",
+                    "を",
+                    "返し",
+                    "て",
+                    "いこう",
+                    "!",
+                ],
+                ["外国", "人", "##参", "政権"],
+                ["魔法", "少女", "リリ", "##カル", "な", "の", "は"],
+                [
+                    "[CLS]",
+                    "国境",
+                    "の",
+                    "[MASK]",
+                    "トンネル",
+                    "を",
+                    "抜ける",
+                    "と",
+                    "[UNK]",
+                    "で",
+                    "あっ",
+                    "た",
+                    "。",
+                    "[SEP]",
+                ],
+                [
+                    "[CLS]",
+                    "国境",
+                    "の",
+                    "[MASK]",
+                    "トンネル",
+                    "を",
+                    "抜ける",
+                    "と",
+                    "[UNK]",
+                    "で",
+                    "あっ",
+                    "た",
+                    "。",
+                    "[SEP]",
+                ],
+            ],
+        ),
+        (
+            "nlp-waseda/roberta-base-japanese",
+            [
+                [
+                    "▁未来",
+                    "▁科学",
+                    "▁部",
+                    "▁で",
+                    "▁コンビニ",
+                    "▁店員",
+                    "▁に",
+                    "▁なり",
+                    "き",
+                    "って",
+                    "▁お",
+                    "釣",
+                    "り",
+                    "▁を",
+                    "▁返し",
+                    "て",
+                    "▁いこう",
+                    "▁!",
+                ],
+                ["▁外国", "▁人", "▁参政", "▁権"],
+                ["▁魔法", "▁少女", "▁リ", "リ", "カル", "な", "の", "は"],
+                [
+                    "[CLS]",
+                    "▁国境",
+                    "▁の",
+                    "[MASK]",
+                    "▁トンネル",
+                    "▁を",
+                    "▁抜ける",
+                    "▁と",
+                    "[UNK]",
+                    "▁であった",
+                    "▁。",
+                    "[SEP]",
+                ],
+            ],
+        ),
+        (
+            "ku-nlp/deberta-v2-base-japanese",
+            [
+                [
+                    "未来",
+                    "▁科学",
+                    "▁部",
+                    "▁で",
+                    "▁コンビニ",
+                    "▁店員",
+                    "▁に",
+                    "▁なり",
+                    "き",
+                    "って",
+                    "▁お",
+                    "釣り",
+                    "▁を",
+                    "▁返して",
+                    "▁いこう",
+                    "▁!",
+                ],
+                ["外国", "▁人", "▁参政", "▁権"],
+                ["魔法", "▁少女", "▁リ", "リ", "カル", "な", "の", "は"],
+                [
+                    "[CLS]",
+                    "国",
+                    "境",
+                    "▁の",
+                    "[MASK]",
+                    "トン",
+                    "ネル",
+                    "▁を",
+                    "▁抜ける",
+                    "▁と",
+                    "[UNK]",
+                    "であった",
+                    "▁。",
+                    "[SEP]",
+                ],
+            ],
+        ),
+    ],
+)
+def test_public_tokenizer(pretrained_model: str, lst_tokens: List[List[str]]) -> None:
+    lst_input: List[str] = [
+        "未来科学部でコンビニ店員になりきってお釣りを返していこう！",
+        "外国人参政権",
+        "魔法少女リリカルなのは",
+        "[CLS]国境の[MASK]トンネルを抜けると[UNK]であった。[SEP]",
     ]
-    assert tokenizer.tokenize("[CLS]国境の[MASK]トンネルを抜けると[UNK]であった。[SEP]") == lst_tokens
-
-
-def test_cltohoku_bertbasejapanese() -> None:
     tokenizer: JapaneseTransformerTokenizer = (
-        JapaneseTransformerTokenizer.from_pretrained("cl-tohoku/bert-base-japanese")
+        JapaneseTransformerTokenizer.from_pretrained(pretrained_model)
     )
-    lst_tokens_1: List[str] = [
-        "未来",
-        "科学",
-        "部",
-        "で",
-        "コンビニ",
-        "店員",
-        "に",
-        "なり",
-        "きっ",
-        "て",
-        "お",
-        "##釣",
-        "##り",
-        "を",
-        "返し",
-        "て",
-        "いこ",
-        "う",
-        "!",
-    ]
-    assert tokenizer.tokenize(sentence_1) == lst_tokens_1
-    lst_tokens_2: List[str] = ["外国", "人", "##参", "政権"]
-    assert tokenizer.tokenize(sentence_2) == lst_tokens_2
-    lst_tokens_3: List[str] = ["魔法", "少女", "リ", "##リカル", "な", "の", "は"]
-    assert tokenizer.tokenize(sentence_3) == lst_tokens_3
-
-
-def test_cltohoku_bertbasejapanese_v2() -> None:
-    tokenizer: JapaneseTransformerTokenizer = (
-        JapaneseTransformerTokenizer.from_pretrained("cl-tohoku/bert-base-japanese-v2")
-    )
-    lst_tokens_1: List[str] = [
-        "未来",
-        "科学",
-        "部",
-        "で",
-        "コンビニ",
-        "店員",
-        "に",
-        "なり",
-        "きっ",
-        "て",
-        "お",
-        "釣り",
-        "を",
-        "返し",
-        "て",
-        "いこう",
-        "!",
-    ]
-    assert tokenizer.tokenize(sentence_1) == lst_tokens_1
-    lst_tokens_2: List[str] = ["外国", "人", "##参", "政権"]
-    assert tokenizer.tokenize(sentence_2) == lst_tokens_2
-    lst_tokens_3: List[str] = ["魔法", "少女", "リリ", "##カル", "な", "の", "は"]
-    assert tokenizer.tokenize(sentence_3) == lst_tokens_3
-
-
-def test_nlpwaseda_robertabasejapanese() -> None:
-    tokenizer: JapaneseTransformerTokenizer = (
-        JapaneseTransformerTokenizer.from_pretrained("nlp-waseda/roberta-base-japanese")
-    )
-    lst_tokens_1: List[str] = [
-        "▁未来",
-        "▁科学",
-        "▁部",
-        "▁で",
-        "▁コンビニ",
-        "▁店員",
-        "▁に",
-        "▁なり",
-        "き",
-        "って",
-        "▁お",
-        "釣",
-        "り",
-        "▁を",
-        "▁返し",
-        "て",
-        "▁いこう",
-        "▁!",
-    ]
-    assert tokenizer.tokenize(sentence_1) == lst_tokens_1
-    lst_tokens_2: List[str] = ["▁外国", "▁人", "▁参政", "▁権"]
-    assert tokenizer.tokenize(sentence_2) == lst_tokens_2
-    lst_tokens_3: List[str] = ["▁魔法", "▁少女", "▁リ", "リ", "カル", "な", "の", "は"]
-    assert tokenizer.tokenize(sentence_3) == lst_tokens_3
+    for sentence, expected_tokens in zip(lst_input, lst_tokens):
+        assert tokenizer.tokenize(sentence) == expected_tokens
