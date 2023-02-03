@@ -1,0 +1,23 @@
+diff -uprN jumanpp-2.0.0-rc3/libs/catch.hpp jumanpp-2.0.0-rc3/libs/catch.hpp
+--- jumanpp-2.0.0-rc3/libs/catch.hpp	2019-07-31 18:34:47.000000000 +0900
++++ jumanpp-2.0.0-rc3/libs/catch.hpp	2023-02-04 00:09:24.254592080 +0900
+@@ -6601,7 +6601,7 @@ namespace Catch {
+     bool FatalConditionHandler::isSet = false;
+     struct sigaction FatalConditionHandler::oldSigActions[sizeof(signalDefs)/sizeof(SignalDefs)] = {};
+     stack_t FatalConditionHandler::oldSigStack = {};
+-    char FatalConditionHandler::altStackMem[SIGSTKSZ] = {};
++    char FatalConditionHandler::altStackMem[32768] = {};
+ 
+ } // namespace Catch
+ 
+diff -uprN jumanpp-2.0.0-rc3/src/util/serialization_test.cc jumanpp-2.0.0-rc3/src/util/serialization_test.cc
+--- jumanpp-2.0.0-rc3/src/util/serialization_test.cc	2019-07-31 18:34:52.000000000 +0900
++++ jumanpp-2.0.0-rc3/src/util/serialization_test.cc	2023-02-04 00:10:29.886598043 +0900
+@@ -2,6 +2,7 @@
+ // Created by Arseny Tolmachev on 2017/03/04.
+ //
+ 
++#include <limits>
+ #include "util/serialization.h"
+ #include "testing/standalone_test.h"
+ #include "util/serialization_flatmap.h"
