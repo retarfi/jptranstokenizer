@@ -7,14 +7,17 @@
   <a href="https://pypi.python.org/pypi/jptranstokenizer">
     <img alt="pypi" src="https://img.shields.io/pypi/v/jptranstokenizer.svg">
   </a>
+  <a href="https://github.com/retarfi/jptranstokenizer/releases">
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/retarfi/jptranstokenizer.svg">
+  </a>
   <a href="https://github.com/retarfi/jptranstokenizer#licenses">
     <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">
   </a>
   <a href="https://github.com/retarfi/jptranstokenizer/actions/workflows/test.yml">
     <img alt="Test" src="https://github.com/retarfi/jptranstokenizer/actions/workflows/test.yml/badge.svg">
   </a>
-  <a href="https://github.com/retarfi/jptranstokenizer/releases">
-    <img alt="GitHub release" src="https://img.shields.io/github/v/release/retarfi/jptranstokenizer.svg">
+  <a href="https://codecov.io/gh/retarfi/jptranstokenizer">
+    <img alt="codecov" src="https://codecov.io/gh/retarfi/jptranstokenizer/branch/main/graph/badge.svg?token=MF0U2L7JA9">
   </a>
 </p>
 
@@ -61,7 +64,8 @@ Be sure to check here again when you cite.**
   year = {2022},
   publisher = {GitHub},
   journal = {GitHub repository},
-  howpublished = {\url{https://github.com/retarfi/jptranstokenizer}}}
+  howpublished = {\url{https://github.com/retarfi/jptranstokenizer}}
+}
 ```
 
 
