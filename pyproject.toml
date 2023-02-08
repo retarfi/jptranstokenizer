@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jptranstokenizer"
-version = "0.2.0"
+version = "0.3.0"
 description = "Japanese tokenizer with transformers library"
 authors = ["Masahiro Suzuki <msuzuki9609@gmail.com>"]
 license = "MIT"
