@@ -16,7 +16,7 @@ class SentencepieceTokenizer:
             The sentencepiece model file path.
         sp_model_kwargs (``Dict[str, Any]``, *optional*):
             Arguments of dict to pass ``sentencepiece.SentencePieceProcessor``.
-        spm (``sentencepiece.SentencePieceProcessor``, *optional*):
+        sp_model (``sentencepiece.SentencePieceProcessor``, *optional*):
             Already trained ``SentencePieceProcessor`` model.
     """
 
@@ -24,10 +24,10 @@ class SentencepieceTokenizer:
         self,
         vocab_file: Optional[str] = None,
         sp_model_kwargs: Optional[Dict[str, Any]] = None,
-        spm: Optional[Any] = None,
+        sp_model: Optional[Any] = None,
     ):
-        if vocab_file is None and spm is None:
-            raise ValueError("vocab_file or spm must be specified")
+        if vocab_file is None and sp_model is None:
+            raise ValueError("vocab_file or sp_model must be specified")
         try:
             import sentencepiece as sp
         except ModuleNotFoundError as error:
@@ -35,20 +35,20 @@ class SentencepieceTokenizer:
                 "You need to install sentencepiece to use SentencepieceTokenizer."
                 "See https://github.com/google/sentencepiece for installation."
             )
-        self.spm: sp.SentencePieceProcessor
-        if spm is None:
+        self.sp_model: sp.SentencePieceProcessor
+        if sp_model is None:
             import sentencepiece as sp
 
             self.sp_model_kwargs: Dict[str, Any] = (
                 {} if sp_model_kwargs is None else sp_model_kwargs
             )
-            self.spm = sp.SentencePieceProcessor(**self.sp_model_kwargs)
-            self.spm.Load(vocab_file)
+            self.sp_model = sp.SentencePieceProcessor(**self.sp_model_kwargs)
+            self.sp_model.Load(vocab_file)
         else:
-            self.spm = spm
-        self.bpe_vocab_size: int = self.spm.GetPieceSize()
+            self.sp_model = sp_model
+        self.bpe_vocab_size: int = self.sp_model.GetPieceSize()
         self.vocab: Dict[str, int] = {
-            self.spm.IdToPiece(i): i for i in range(self.bpe_vocab_size)
+            self.sp_model.IdToPiece(i): i for i in range(self.bpe_vocab_size)
         }
 
     def tokenize(self, text: str) -> List[str]:
@@ -60,11 +60,11 @@ class SentencepieceTokenizer:
         Returns:
             ``List[str]``: A list of sentencepiece tokens.
         """
-        pieces: List[str] = self.spm.encode(text, out_type=str)
+        pieces: List[str] = self.sp_model.encode(text, out_type=str)
         tokens: List[str] = []
         for piece in pieces:
             if len(piece) > 1 and piece[-1] == str(",") and piece[-2].isdigit():
-                cur_pieces = self.spm.EncodeAsPieces(
+                cur_pieces = self.sp_model.EncodeAsPieces(
                     piece[:-1].replace(SPIECE_UNDERLINE, "")
                 )
                 if (

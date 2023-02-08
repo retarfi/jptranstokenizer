@@ -380,7 +380,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 self.vocab = self.subword_tokenizer.vocab
                 self.ids_to_tokens = collections.OrderedDict(
                     [
-                        (i, self.subword_tokenizer.spm.IdToPiece(i))
+                        (i, self.subword_tokenizer.sp_model.IdToPiece(i))
                         for i in range(self.subword_tokenizer.bpe_vocab_size)
                     ]
                 )
@@ -496,19 +496,19 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                     tentative_tokenizer,
                     (transformers.AlbertTokenizer, transformers.T5Tokenizer),
                 ):
-                    spm = tentative_tokenizer.sp_model
+                    sp_model = tentative_tokenizer.sp_model
                 else:
                     # Deberta or DebertaV2
-                    spm = tentative_tokenizer._tokenizer.spm
+                    sp_model = tentative_tokenizer._tokenizer.spm
                 from .subword import SentencepieceTokenizer
 
                 subword_tokenizer = SentencepieceTokenizer(
-                    vocab_file=None, sp_model_kwargs=sp_model_kwargs, spm=spm
+                    vocab_file=None, sp_model_kwargs=sp_model_kwargs, sp_model=sp_model
                 )
                 vocab = subword_tokenizer.vocab
                 ids_to_tokens = collections.OrderedDict(
                     [
-                        (i, subword_tokenizer.spm.IdToPiece(i))
+                        (i, subword_tokenizer.sp_model.IdToPiece(i))
                         for i in range(subword_tokenizer.bpe_vocab_size)
                     ]
                 )
@@ -614,7 +614,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         if self.subword_tokenizer_type in ["character", "wordpiece"]:
             return super().convert_tokens_to_string(self, tokens)
         elif self.subword_tokenizer_type == "sentencepiece":
-            return self.subword_tokenizer.spm.decode(tokens)
+            return self.subword_tokenizer.sp_model.decode(tokens)
         else:
             raise NotImplementedError(
                 f"{self.subword_tokenizer} is not allowed for convert_tokens_to_string"
