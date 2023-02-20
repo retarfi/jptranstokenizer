@@ -180,7 +180,7 @@ def get_word_tokenizer(
             ``"small"``, ``"core"``, or ``"full"`` can be specified.
     """
     if word_tokenizer_type == "basic":
-        logger.warn("Argument normalize_text is ignored")
+        logger.warning("Argument normalize_text is ignored")
         word_tokenizer = BasicTokenizer(
             do_lower_case=do_lower_case, tokenize_chinese_chars=False
         )
