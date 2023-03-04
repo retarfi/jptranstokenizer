@@ -87,7 +87,7 @@ class SudachiTokenizer(MainTokenizerABC):
         if self.normalize_text:
             text = unicodedata.normalize("NFKC", text)
         tokens: List[str]
-        if self.ignore_max_byte_error and len(text.encode()) > 4096:
+        if self.ignore_max_byte_error and len(text.encode()) > 49149:
             tokens = []
         else:
             tokens = [
