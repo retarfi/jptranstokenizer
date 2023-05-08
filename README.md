@@ -58,13 +58,15 @@ Be sure to check here again when you cite.**
 ### This Implementation
 
 ```
-@misc{suzuki-2022-github,
-  author = {Masahiro Suzuki},
-  title = {jptranstokenizer: Japanese Tokenzier for transformers},
-  year = {2022},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/retarfi/jptranstokenizer}}
+@inproceedings{Suzuki-2023-nlp,
+  jtitle = {{異なる単語分割システムによる日本語事前学習言語モデルの性能評価}},
+  title = {{Performance Evaluation of Japanese Pre-trained Language Models with Different Word Segmentation Systems}},
+  jauthor = {鈴木, 雅弘 and 坂地, 泰紀 and 和泉, 潔},
+  author = {Suzuki, Masahiro and Sakaji, Hiroki and Izumi, Kiyoshi},
+  jbooktitle = {言語処理学会 第29回年次大会 (NLP2023)},
+  booktitle = {29th Annual Meeting of the Association for Natural Language Processing (NLP)},
+  year = {2023},
+  pages = {894-898}
 }
 ```
 
@@ -80,5 +82,5 @@ Be sure to check here again when you cite.**
   - Author megagonlabs
   - https://github.com/megagonlabs/UD_Japanese-GSD
 - Juman++
-  - Author Kurohashi Lab. in Universyti of Kyoto
+  - Author Kurohashi Lab. in University of Kyoto
   - https://github.com/ku-nlp/jumanpp
