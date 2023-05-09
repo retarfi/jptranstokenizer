@@ -139,7 +139,9 @@ def test_japanesetransformertokenizer__tokenize(
         "rinna/japanese-roberta-base",  # sentencepiece
     ],
 )
-def test_japanesetransformertokenizer_convert_tokens_to_string(tokenizer_name: str) -> None:
+def test_japanesetransformertokenizer_convert_tokens_to_string(
+    tokenizer_name: str,
+) -> None:
     tokenizer = JapaneseTransformerTokenizer.from_pretrained(tokenizer_name)
     text: str = "今日も晴れです。"
     tokens: List[str] = tokenizer.tokenize(text)
