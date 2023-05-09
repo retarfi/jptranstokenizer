@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import transformers
 from transformers import (
+    AddedToken,
     AlbertTokenizer,
     BertJapaneseTokenizer,
     PreTrainedTokenizer,
@@ -19,27 +20,6 @@ from transformers.models.bert_japanese.tokenization_bert_japanese import (
     CharacterTokenizer,
     MecabTokenizer,
 )
-
-
-if transformers.is_tokenizers_available():
-    from tokenizers import AddedToken
-else:
-
-    @dataclass(frozen=True, eq=True)
-    class AddedToken:
-        """
-        AddedToken represents a token to be added to a Tokenizer An AddedToken can have special options defining the
-        way it should behave.
-        """
-
-        content: str = field(default_factory=str)
-        single_word: bool = False
-        lstrip: bool = False
-        rstrip: bool = False
-        normalized: bool = True
-
-        def __getstate__(self):
-            return self.__dict__
 
 
 logging.set_verbosity_info()
@@ -61,6 +41,18 @@ PUBLIC_AVAILABLE_SETTING_MAP: Dict[str, Dict[str, Union[str, bool]]] = {
         "word_tokenizer_type": "mecab",
         "tokenizer_class": "BertJapaneseTokenizer",
         "mecab_dic": "ipadic",
+    },
+    "cl-tohoku/bert-base-japanese-char": {
+        "do_lower_case": False,
+        "word_tokenizer_type": "mecab",
+        "tokenizer_class": "BertJapaneseTokenizer",
+        "subword_tokenizer_type": "character",
+    },
+    "cl-tohoku/bert-base-japanese-char-whole-word-masking": {
+        "do_lower_case": False,
+        "word_tokenizer_type": "mecab",
+        "tokenizer_class": "BertJapaneseTokenizer",
+        "subword_tokenizer_type": "character",
     },
     "cl-tohoku/bert-large-japanese": {
         "word_tokenizer_type": "mecab",
@@ -520,7 +512,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                 elif isinstance(subword_tokenizer, CharacterTokenizer):
                     subword_tokenizer_type = "character"
                 else:
-                    raise ValueError()
+                    raise NotImplementedError()
                 vocab = tentative_tokenizer.vocab
                 ids_to_tokens = tentative_tokenizer.ids_to_tokens
             else:
@@ -582,9 +574,9 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
             for k, v in dct_setting.items():
                 kwargs[k] = v
         else:
-            if kwargs["word_tokenizer_type"] is None:
+            if kwargs.get("word_tokenizer_type") is None:
                 raise ValueError("word_tokenizer must be specified")
-            if kwargs["tokenizer_class"] is None:
+            if kwargs.get("tokenizer_class") is None:
                 raise ValueError("tokenizer_class must be specified")
         return _from_pretrained(**kwargs)
 
@@ -612,7 +604,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
 
     def convert_tokens_to_string(self, tokens: List[str]):
         if self.subword_tokenizer_type in ["character", "wordpiece"]:
-            return super().convert_tokens_to_string(self, tokens)
+            return super().convert_tokens_to_string(tokens)
         elif self.subword_tokenizer_type == "sentencepiece":
             return self.subword_tokenizer.sp_model.decode(tokens)
         else:
