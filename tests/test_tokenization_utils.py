@@ -145,4 +145,4 @@ def test_japanesetransformertokenizer_convert_tokens_to_string(
     tokenizer = JapaneseTransformerTokenizer.from_pretrained(tokenizer_name)
     text: str = "今日も晴れです。"
     tokens: List[str] = tokenizer.tokenize(text)
-    assert tokenizer.convert_tokens_to_string(text).replace(" ", "") == text
+    assert tokenizer.convert_tokens_to_string(tokens).replace(" ", "") == text
