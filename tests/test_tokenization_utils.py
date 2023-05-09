@@ -47,8 +47,6 @@ def test_japanesetransformertokenizer_init(
         vocab_file = os.path.join(DATA_DIR, "wordpiece/vocab.txt")
     elif subword_tokenizer_type == "sentencepiece":
         vocab_file = os.path.join(DATA_DIR, "sentencepiece/spiece.model")
-    else:
-        raise ValueError("Invalid subword_tokenizer_type")
     JapaneseTransformerTokenizer(
         vocab_file=vocab_file,
         word_tokenizer_type=word_tokenizer_type,

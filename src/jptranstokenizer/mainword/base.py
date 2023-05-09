@@ -21,15 +21,7 @@ class MainTokenizerABC(ABC):
 
     @abstractmethod
     def tokenize(self, text: str, **kwargs: Dict[str, Any]) -> List[str]:
-        """Devide the sequence into words.
-
-        Args:
-            text (``str``): A sequence to be encoded.
-
-        Returns:
-            ``List[str]``: A list of words.
-        """
-        pass
+        """Devide the sequence into words."""
 
 
 class Normalizer(MainTokenizerABC):
