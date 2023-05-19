@@ -14,7 +14,7 @@ version: 0.3.2
 date-released: 2023-05-09
 url: "https://github.com/retarfi/jptranstokenizer"
 preferred-citation:
-  type: inproceedings
+  type: conference-paper
   authors:
   - family-names: "鈴木"
     given-names: "雅弘"
