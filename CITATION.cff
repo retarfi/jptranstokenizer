@@ -1,0 +1,32 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "鈴木"
+  given-names: "雅弘"
+  orcid: "https://orcid.org/0000-0001-8519-5617"
+- family-names: "坂地"
+  given-names: "泰紀"
+  orcid: "https://orcid.org/0000-0001-5030-625X"
+- family-names: "和泉"
+  given-names: "潔"
+title: "jptranstokenizer: Japanese Tokenzier for transformers"
+version: 0.3.2
+date-released: 2023-05-09
+url: "https://github.com/retarfi/jptranstokenizer"
+preferred-citation:
+  type: inproceedings
+  authors:
+  - family-names: "鈴木"
+    given-names: "雅弘"
+    orcid: "https://orcid.org/0000-0001-8519-5617"
+  - family-names: "坂地"
+    given-names: "泰紀"
+    orcid: "https://orcid.org/0000-0001-5030-625X"
+  - family-names: "和泉"
+    given-names: "潔"
+  booktitle: "言語処理学会 第29回年次大会 (NLP2023)"
+  month: 3
+  start: 894
+  end: 898
+  title: "異なる単語分割システムによる日本語事前学習言語モデルの性能評価"
+  year: 2023
