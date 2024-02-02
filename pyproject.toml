@@ -10,7 +10,7 @@ packages = [{include = "jptranstokenizer", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-transformers = "^4.7.0"
+transformers = "^4.24.0"
 pyknp = "^0.6.1"
 sentencepiece = "^0.1.96"
 spacy = "^3.2.0"
@@ -44,3 +44,10 @@ force_single_line = true
 [tool.mypy]
 disallow_untyped_defs = true
 ignore_missing_imports = true
+
+
+[tool.pytest.ini_options]
+addopts = "--cov=./ --cov-report=xml"
+
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "if __name__ == .__main__.:"]

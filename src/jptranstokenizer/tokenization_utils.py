@@ -10,14 +10,11 @@ from transformers import (
     PreTrainedTokenizer,
     logging,
 )
-from transformers.models.bert.tokenization_bert import (
-    BasicTokenizer,
-    WordpieceTokenizer,
-    load_vocab,
-)
+from transformers.models.bert.tokenization_bert import BasicTokenizer, load_vocab
 from transformers.models.bert_japanese.tokenization_bert_japanese import (
     CharacterTokenizer,
     MecabTokenizer,
+    WordpieceTokenizer,
 )
 
 from .model_list import PUBLIC_AVAILABLE_SETTING_MAP
@@ -508,8 +505,27 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         if self.subword_tokenizer_type in ["character", "wordpiece"]:
             return super().convert_tokens_to_string(tokens)
         elif self.subword_tokenizer_type == "sentencepiece":
-            return self.subword_tokenizer.sp_model.decode(tokens)
-        else:
+            """Converts a sequence of tokens (string) in a single string."""
+            current_sub_tokens = []
+            out_string = ""
+            for token in tokens:
+                if token in self.all_special_tokens:
+                    out_string = out_string.rstrip(" ")
+                    if current_sub_tokens:
+                        out_string += " " + self.subword_tokenizer.sp_model.decode(
+                            current_sub_tokens
+                        )
+                        current_sub_tokens = []
+                    out_string += " " + token
+                else:
+                    current_sub_tokens.append(token)
+            out_string = out_string.rstrip(" ")
+            if current_sub_tokens:
+                out_string += " " + self.subword_tokenizer.sp_model.decode(
+                    current_sub_tokens
+                )
+            return out_string.strip()
+        else:  # pragma: no cover
             raise NotImplementedError(
                 f"{self.subword_tokenizer} is not allowed for convert_tokens_to_string"
             )
