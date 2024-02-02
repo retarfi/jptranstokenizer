@@ -46,7 +46,7 @@ def get_word_tokenizer(
 
     Args:
         word_tokenizer_type (``str``, defaults to ``"basic"``):
-            Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"spacy-luw"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
+            Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
         normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
         do_lower_case (``bool``, *optional*, defaults to ``False``):
@@ -90,12 +90,6 @@ def get_word_tokenizer(
             normalize_text=normalize_text,
             ignore_max_byte_error=ignore_max_byte_error,
         )
-    elif word_tokenizer_type == "spacy-luw":
-        from .mainword import SpacyluwTokenizer
-
-        word_tokenizer = SpacyluwTokenizer(
-            do_lower_case=do_lower_case, normalize_text=normalize_text
-        )
     elif word_tokenizer_type == "sudachi":
         from .mainword import SudachiTokenizer
 
@@ -134,7 +128,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         vocab_file (``str`` or ``os.PathLike``, *optional*, defaults to ``""``):
             _description_.
         word_tokenizer_type (``str``, defaults to `basic`):
-            Type of word tokenizer. "mecab", "juman", "spacy-luw", "sudachi", "basic", "none" (only normalize texts) can be specified.
+            Type of word tokenizer. "mecab", "juman", "sudachi", "basic", "none" (only normalize texts) can be specified.
         subword_tokenizer_type (``str``, defaults to `"wordpiece"`):
             Type of word tokenizer. "wordpiece", "sentencepiece", "character" (split by one token) can be specified.
         normalize_text (``bool``, *optional*, defaults to ``True``):
@@ -311,7 +305,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                   file (if and only if the tokenizer only requires a single vocabulary file like Bert or XLNet), e.g.,
                   ``./my_model_directory/vocab.txt``.
             word_tokenizer_type (``str``, defaults to ``"basic"``):
-                Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"spacy-luw"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
+                Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
             tokenizer_class (``str``, *optional*):
                 Must be specified when `tokenizer_name_or_path` is not in the supported list.
                 ``"AlbertTokenizer"``, ``"T5Tokenizer"``, and ``"BertJapaneseTokenizer"`` (whose classes are in transformers library) are available.

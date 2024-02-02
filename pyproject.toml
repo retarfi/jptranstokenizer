@@ -13,8 +13,6 @@ python = "^3.7"
 transformers = "^4.24.0"
 pyknp = "^0.6.1"
 sentencepiece = "^0.1.96"
-spacy = "^3.2.0"
-SudachiTra = "^0.1.7"
 
 
 [tool.poetry.dev-dependencies]
