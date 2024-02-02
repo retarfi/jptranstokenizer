@@ -139,10 +139,31 @@ def test_japanesetransformertokenizer__tokenize(
         "rinna/japanese-roberta-base",  # sentencepiece
     ],
 )
-def test_japanesetransformertokenizer_convert_tokens_to_string(
+def test_japanesetransformertokenizer_convert_tokens_to_string1(
     tokenizer_name: str,
 ) -> None:
     tokenizer = JapaneseTransformerTokenizer.from_pretrained(tokenizer_name)
     text: str = "今日も晴れです。"
     tokens: List[str] = tokenizer.tokenize(text)
     assert tokenizer.convert_tokens_to_string(tokens).replace(" ", "") == text
+
+
+@pytest.mark.parametrize(
+    "tokenizer_name, strings",
+    [
+        (
+            "izumi-lab/deberta-v2-small-japanese",
+            "テキスト [SEP] [MASK] テキストは、文章や文献のひとまとまりを指して呼ぶ呼称。 [SEP]",
+        ),
+        (
+            "ku-nlp/deberta-v2-base-japanese",
+            "テキスト [SEP] [MASK] テキスト は 、 文章 や 文献 の ひと まとまり を 指して 呼ぶ 呼称 。 [SEP]",
+        ),
+    ],
+)
+def test_japanesetransformertokenizer_convert_tokens_to_string2(
+    tokenizer_name: str, strings: str
+) -> None:
+    tokenizer = JapaneseTransformerTokenizer.from_pretrained(tokenizer_name)
+    text: str = "テキスト [SEP] [MASK] テキストは、文章や文献のひとまとまりを指して呼ぶ呼称。 [SEP]"
+    assert tokenizer.convert_tokens_to_string(tokenizer.tokenize(text)) == strings
