@@ -1,6 +1,5 @@
 import collections
 import os
-from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
 
 import transformers
@@ -11,119 +10,19 @@ from transformers import (
     PreTrainedTokenizer,
     logging,
 )
-from transformers.models.bert.tokenization_bert import (
-    BasicTokenizer,
-    WordpieceTokenizer,
-    load_vocab,
-)
+from transformers.models.bert.tokenization_bert import BasicTokenizer, load_vocab
 from transformers.models.bert_japanese.tokenization_bert_japanese import (
     CharacterTokenizer,
     MecabTokenizer,
+    WordpieceTokenizer,
 )
+
+from .model_list import PUBLIC_AVAILABLE_SETTING_MAP
 
 
 logging.set_verbosity_info()
 logging.enable_explicit_format()
 logger = logging.get_logger()
-
-PUBLIC_AVAILABLE_SETTING_MAP: Dict[str, Dict[str, Union[str, bool]]] = {
-    "cl-tohoku/bert-base-japanese": {
-        "word_tokenizer_type": "mecab",
-        "tokenizer_class": "BertJapaneseTokenizer",
-        "mecab_dic": "ipadic",
-    },
-    "cl-tohoku/bert-base-japanese-v2": {
-        "word_tokenizer_type": "mecab",
-        "tokenizer_class": "BertJapaneseTokenizer",
-        "mecab_dic": "unidic_lite",
-    },
-    "cl-tohoku/bert-base-japanese-whole-word-masking": {
-        "word_tokenizer_type": "mecab",
-        "tokenizer_class": "BertJapaneseTokenizer",
-        "mecab_dic": "ipadic",
-    },
-    "cl-tohoku/bert-base-japanese-char": {
-        "do_lower_case": False,
-        "word_tokenizer_type": "mecab",
-        "tokenizer_class": "BertJapaneseTokenizer",
-        "subword_tokenizer_type": "character",
-    },
-    "cl-tohoku/bert-base-japanese-char-whole-word-masking": {
-        "do_lower_case": False,
-        "word_tokenizer_type": "mecab",
-        "tokenizer_class": "BertJapaneseTokenizer",
-        "subword_tokenizer_type": "character",
-    },
-    "cl-tohoku/bert-large-japanese": {
-        "word_tokenizer_type": "mecab",
-        "tokenizer_class": "BertJapaneseTokenizer",
-        "mecab_dic": "unidic_lite",
-    },
-    "ken11/albert-base-japanese-v1-with-japanese-tokenizer": {
-        "word_tokenizer_type": "mecab",
-        "tokenizer_class": "BertJapaneseTokenizer",
-        "mecab_dic": "ipadic",
-    },
-    "ku-nlp/deberta-v2-base-japanese": {
-        "word_tokenizer_type": "juman",
-        "tokenizer_class": "DebertaV2Tokenizer",
-        "do_subword_by_word": False,
-    },
-    "ku-nlp/deberta-v2-large-japanese": {
-        "word_tokenizer_type": "juman",
-        "tokenizer_class": "DebertaV2Tokenizer",
-        "do_subword_by_word": False,
-    },
-    "ku-nlp/deberta-v2-tiny-japanese": {
-        "word_tokenizer_type": "juman",
-        "tokenizer_class": "DebertaV2Tokenizer",
-        "do_subword_by_word": False,
-    },
-    "nlp-waseda/roberta-base-japanese": {
-        "word_tokenizer_type": "juman",
-        "tokenizer_class": "AlbertTokenizer",
-        "do_subword_by_word": False,
-    },
-    "nlp-waseda/roberta-large-japanese": {
-        "word_tokenizer_type": "juman",
-        "tokenizer_class": "AlbertTokenizer",
-        "do_subword_by_word": False,
-    },
-    "nlp-waseda/roberta-large-japanese-seq512": {
-        "word_tokenizer_type": "juman",
-        "tokenizer_class": "AlbertTokenizer",
-        "do_subword_by_word": False,
-    },
-    "rinna/japanese-roberta-base": {
-        "do_word_tokenize": False,
-        "word_tokenizer_type": "",
-        "tokenizer_class": "T5Tokenizer",
-    },
-}
-
-IZUMILAB_SETTING_MAP: Dict[str, Dict[str, str]] = {
-    f"izumi-lab/{model_name}": {
-        "word_tokenizer_type": "mecab",
-        "tokenizer_class": "BertJapaneseTokenizer",
-        "mecab_dic": "ipadic",
-    }
-    for model_name in [
-        "bert-small-japanese",
-        "bert-small-japanese-fin",
-        "electra-base-japanese-discriminator",
-        "electra-base-japanese-generator",
-        "electra-small-japanese-discriminator",
-        "electra-small-japanese-fin-discriminator",
-        "electra-small-japanese-fin-generator",
-        "electra-small-japanese-generator",
-        "electra-small-paper-japanese-discriminator",
-        "electra-small-paper-japanese-fin-discriminator",
-        "electra-small-paper-japanese-fin-generator",
-        "electra-small-paper-japanese-generator",
-    ]
-}
-
-PUBLIC_AVAILABLE_SETTING_MAP.update(IZUMILAB_SETTING_MAP)
 
 
 def get_word_tokenizer(
@@ -147,7 +46,7 @@ def get_word_tokenizer(
 
     Args:
         word_tokenizer_type (``str``, defaults to ``"basic"``):
-            Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"spacy-luw"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
+            Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
         normalize_text (``bool``, *optional*, defaults to ``True``):
             Whether to apply unicode normalization to text before tokenization.
         do_lower_case (``bool``, *optional*, defaults to ``False``):
@@ -191,12 +90,6 @@ def get_word_tokenizer(
             normalize_text=normalize_text,
             ignore_max_byte_error=ignore_max_byte_error,
         )
-    elif word_tokenizer_type == "spacy-luw":
-        from .mainword import SpacyluwTokenizer
-
-        word_tokenizer = SpacyluwTokenizer(
-            do_lower_case=do_lower_case, normalize_text=normalize_text
-        )
     elif word_tokenizer_type == "sudachi":
         from .mainword import SudachiTokenizer
 
@@ -235,7 +128,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         vocab_file (``str`` or ``os.PathLike``, *optional*, defaults to ``""``):
             _description_.
         word_tokenizer_type (``str``, defaults to `basic`):
-            Type of word tokenizer. "mecab", "juman", "spacy-luw", "sudachi", "basic", "none" (only normalize texts) can be specified.
+            Type of word tokenizer. "mecab", "juman", "sudachi", "basic", "none" (only normalize texts) can be specified.
         subword_tokenizer_type (``str``, defaults to `"wordpiece"`):
             Type of word tokenizer. "wordpiece", "sentencepiece", "character" (split by one token) can be specified.
         normalize_text (``bool``, *optional*, defaults to ``True``):
@@ -412,7 +305,7 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
                   file (if and only if the tokenizer only requires a single vocabulary file like Bert or XLNet), e.g.,
                   ``./my_model_directory/vocab.txt``.
             word_tokenizer_type (``str``, defaults to ``"basic"``):
-                Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"spacy-luw"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
+                Type of word tokenizer. ``"mecab"``, ``"juman"``, ``"sudachi"``, ``"basic"``, ``"none"`` (only normalize texts) can be specified.
             tokenizer_class (``str``, *optional*):
                 Must be specified when `tokenizer_name_or_path` is not in the supported list.
                 ``"AlbertTokenizer"``, ``"T5Tokenizer"``, and ``"BertJapaneseTokenizer"`` (whose classes are in transformers library) are available.
@@ -606,8 +499,27 @@ class JapaneseTransformerTokenizer(BertJapaneseTokenizer):
         if self.subword_tokenizer_type in ["character", "wordpiece"]:
             return super().convert_tokens_to_string(tokens)
         elif self.subword_tokenizer_type == "sentencepiece":
-            return self.subword_tokenizer.sp_model.decode(tokens)
-        else:
+            """Converts a sequence of tokens (string) in a single string."""
+            current_sub_tokens = []
+            out_string = ""
+            for token in tokens:
+                if token in self.all_special_tokens:
+                    out_string = out_string.rstrip(" ")
+                    if current_sub_tokens:
+                        out_string += " " + self.subword_tokenizer.sp_model.decode(
+                            current_sub_tokens
+                        )
+                        current_sub_tokens = []
+                    out_string += " " + token
+                else:
+                    current_sub_tokens.append(token)
+            out_string = out_string.rstrip(" ")
+            if current_sub_tokens:
+                out_string += " " + self.subword_tokenizer.sp_model.decode(
+                    current_sub_tokens
+                )
+            return out_string.strip()
+        else:  # pragma: no cover
             raise NotImplementedError(
                 f"{self.subword_tokenizer} is not allowed for convert_tokens_to_string"
             )
